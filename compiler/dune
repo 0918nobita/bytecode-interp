@@ -1,0 +1,4 @@
+(executable
+ (name compiler)
+ (public_name psyche.compiler)
+ (libraries base uutf))
