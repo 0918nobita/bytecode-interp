@@ -1,0 +1,4 @@
+(library
+ (name parsec)
+ (public_name psyche.parsec)
+ (libraries base uuseg))
