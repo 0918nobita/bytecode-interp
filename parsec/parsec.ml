@@ -1,8 +1,39 @@
 open Base
 
-type input = Uchar.t list
+type parser_input = Uchar.t list
 
-type ('s, 't, 'u) parser = input -> ('t list, 'u) Result.t
+module ParserInput = struct
+  let of_string (str : string) =
+    let decoder =
+      let nln = `Readline (Uchar.of_scalar_exn 0x000A) in
+      let encoding = `UTF_8 in
+      let src = `String str in
+      Uutf.decoder ~nln ~encoding src
+    in
+    let flag = ref true in
+    let uchars = Stack.create () in
+    while !flag do
+      match Uutf.decode decoder with
+      | `Uchar u -> Stack.push uchars u
+      | `End -> flag := false
+      | _ -> failwith "fatal error"
+    done;
+    uchars
+    |> Stack.to_list
+    |> List.rev
+end
 
-let run_parser (p : ('s, 't, 'u) parser) input : ('t list, 'u) Result.t =
-  p input
+type ('s, 't) parser_output = ('s list * parser_input, 't) Result.t
+
+type ('s, 't) parser = parser_input -> ('s, 't) parser_output
+
+let run_parser p input = p input
+
+module BasicParsers = struct
+  type error = ParseError
+
+  let char c =
+    function
+    | hd :: tl when Uchar.equal hd c -> Ok ([c], tl)
+    | _ -> Error ParseError
+end
