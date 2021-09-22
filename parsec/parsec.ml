@@ -2,18 +2,30 @@ open Base
 
 type parser_input = Ustring.t
 
-type ('s, 't) parser_output = ('s list * parser_input, 't) Result.t
+type remaining_str = Ustring.t
+
+type ('s, 't) parser_output = ('s * remaining_str, 't) Result.t
 
 type ('s, 't) parser = parser_input -> ('s, 't) parser_output
 
 let run_parser p input = p input
 
+let return v input = Ok (v, input)
+
+let bind p f input =
+  run_parser p input |> Result.bind ~f:(fun (a, tl) -> run_parser (f a) tl)
+
+module Syntax = struct
+  let return = return
+
+  let ( let* ) = bind
+end
+
 module BasicParsers = struct
   type error = ParseError
 
-  let char c : (Uchar.t, error) parser =
-   fun input ->
+  let char c input =
     match (Ustring.hd input, Ustring.tl input) with
-    | Some u, Some tl when Uchar.equal u c -> Ok ([ c ], tl)
+    | Some u, Some tl when Uchar.equal u c -> Ok (c, tl)
     | _ -> Error ParseError
 end
