@@ -12,10 +12,15 @@ dev-repo: "git+https://github.com/0918nobita/psyche.git"
 bug-reports: "https://github.com/0918nobita/psyche/issues"
 build: [
   ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
 ]
 depends: [
   "ocaml" {>= "4.08.0"}
   "dune"
   "base"
   "uutf"
+  "ounit2" {with-test}
+  "qcheck" {with-test}
+  "odoc" {with-doc}
 ]
