@@ -2,5 +2,10 @@
   (name test)
   (libraries
     base
+    ounit2
     qcheck
     psyche.parsec))
+
+(rule
+  (alias runtest)
+  (action (run %{exe:test.exe})))
