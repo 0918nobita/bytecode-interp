@@ -1,4 +1,4 @@
 (executable
   (name compiler)
-  (public_name psyche.compiler)
+  (public_name psyche)
   (libraries base))
