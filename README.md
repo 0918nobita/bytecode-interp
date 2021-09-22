@@ -14,6 +14,12 @@ dune build
 dune exec compiler/compiler.exe
 ```
 
+## Test
+
+```bash
+dune runtest
+```
+
 ## Generate documentation
 
 ```bash
