@@ -17,6 +17,10 @@ type ('s, 't) parser
 (** 入力に対してパース処理を行う *)
 val run_parser : ('s, 't) parser -> parser_input -> ('s, 't) parser_output
 
+(** 必ず失敗するパーサ *)
+val empty : ('s, unit) parser
+
+(** [return v] は、必ず成功して [v] を出力するパーサを返す *)
 val return : 's -> ('s, 't) parser
 
 val bind : ('s, 't) parser -> ('s -> ('s2, 't) parser) -> ('s2, 't) parser
@@ -32,6 +36,8 @@ module BasicParsers : sig
   (** 組み込みパーサでのパース処理の失敗を表す型 *)
   type error
 
-  (** 文字のパーサを生成する。パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
+  (**
+    文字のパーサを生成する。
+    パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
   val char : Uchar.t -> (Uchar.t, error) parser
 end

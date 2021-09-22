@@ -10,6 +10,8 @@ type ('s, 't) parser = parser_input -> ('s, 't) parser_output
 
 let run_parser p input = p input
 
+let empty _ = Error ()
+
 let return v input = Ok (v, input)
 
 let bind p f input =
