@@ -21,6 +21,4 @@ let of_string str : t =
 
   Queue.to_list uchars
 
-let hd = List.hd
-
-let tl = List.tl
+let hd_tl = function hd :: tl -> Some (hd, tl) | _ -> None

@@ -25,7 +25,7 @@ module BasicParsers = struct
   type error = ParseError
 
   let char c input =
-    match (Ustring.hd input, Ustring.tl input) with
-    | Some u, Some tl when Uchar.equal u c -> Ok (c, tl)
+    match Ustring.hd_tl input with
+    | Some (u, tl) when Uchar.equal u c -> Ok (c, tl)
     | _ -> Error ParseError
 end
