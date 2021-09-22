@@ -1,8 +1,7 @@
 open Base
 
 let test =
-  QCheck.Test.make
-    ~count:100
+  QCheck.Test.make ~count:100
     QCheck.(list small_int)
     (fun l -> List.equal Int.equal (List.rev (List.rev l)) l)
 
@@ -15,5 +14,6 @@ let () =
   in
   match res with
   | Ok _ -> Stdlib.print_endline "Success"
-  | _ -> Stdlib.print_endline "Failed";
-  Caml.exit @@ QCheck_runner.run_tests [test]
+  | _ ->
+      Stdlib.print_endline "Failed";
+      Caml.exit @@ QCheck_runner.run_tests [ test ]

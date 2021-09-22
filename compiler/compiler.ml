@@ -1,2 +1,1 @@
-let () =
-  Stdlib.print_endline "Psyche compiler"
+let () = Stdlib.print_endline "Psyche compiler"
