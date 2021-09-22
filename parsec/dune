@@ -1,4 +1,6 @@
 (library
   (name parsec)
   (public_name psyche.parsec)
-  (libraries base uutf))
+  (libraries
+    base
+    psyche.ustring))

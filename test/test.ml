@@ -10,7 +10,7 @@ let () =
     Parsec.(
       run_parser
         (BasicParsers.char (Uchar.of_scalar_exn 0x3042))
-        (ParserInput.of_string "あいうえお"))
+        (Ustring.of_string "あいうえお"))
   in
   match res with
   | Ok _ -> Stdlib.print_endline "Success"

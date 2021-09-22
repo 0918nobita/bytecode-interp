@@ -1,0 +1,6 @@
+(library
+  (name ustring)
+  (public_name psyche.ustring)
+  (libraries
+    base
+    uutf))

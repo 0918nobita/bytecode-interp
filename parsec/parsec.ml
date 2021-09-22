@@ -1,27 +1,6 @@
 open Base
 
-type parser_input = Uchar.t list
-
-module ParserInput = struct
-  let of_string str =
-    let decoder =
-      let nln = `Readline (Uchar.of_scalar_exn 0x000A) in
-      let encoding = `UTF_8 in
-      let src = `String str in
-      Uutf.decoder ~nln ~encoding src
-    in
-
-    let flag = ref true in
-    let uchars : Uchar.t Queue.t = Queue.create () in
-    while !flag do
-      match Uutf.decode decoder with
-      | `Uchar u -> Queue.enqueue uchars u
-      | `End -> flag := false
-      | _ -> failwith "fatal error"
-    done;
-
-    Queue.to_list uchars
-end
+type parser_input = Ustring.t
 
 type ('s, 't) parser_output = ('s list * parser_input, 't) Result.t
 
@@ -32,7 +11,9 @@ let run_parser p input = p input
 module BasicParsers = struct
   type error = ParseError
 
-  let char c = function
-    | hd :: tl when Uchar.equal hd c -> Ok ([ c ], tl)
+  let char c : (Uchar.t, error) parser =
+   fun input ->
+    match (Ustring.hd input, Ustring.tl input) with
+    | Some u, Some tl when Uchar.equal u c -> Ok ([ c ], tl)
     | _ -> Error ParseError
 end
