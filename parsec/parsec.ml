@@ -11,16 +11,14 @@ module ParserInput = struct
       Uutf.decoder ~nln ~encoding src
     in
     let flag = ref true in
-    let uchars = Stack.create () in
+    let uchars: Uchar.t Queue.t = Queue.create () in
     while !flag do
       match Uutf.decode decoder with
-      | `Uchar u -> Stack.push uchars u
+      | `Uchar u -> Queue.enqueue uchars u
       | `End -> flag := false
       | _ -> failwith "fatal error"
     done;
-    uchars
-    |> Stack.to_list
-    |> List.rev
+    Queue.to_list uchars
 end
 
 type ('s, 't) parser_output = ('s list * parser_input, 't) Result.t
