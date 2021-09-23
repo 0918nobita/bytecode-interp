@@ -12,22 +12,30 @@ let run_parser p input = p input
 
 let empty _ = Error ()
 
+let map parser ~f input =
+  run_parser parser input |> Result.map ~f:(fun (a, tl) -> (f a, tl))
+
 let return v input = Ok (v, input)
 
-let bind p f input =
+let bind p ~f input =
   run_parser p input |> Result.bind ~f:(fun (a, tl) -> run_parser (f a) tl)
 
 module Syntax = struct
   let return = return
 
-  let ( let* ) = bind
+  let ( let+ ) a f = map a ~f
+
+  let ( let* ) m f = bind m ~f
 end
 
 module BasicParsers = struct
-  type error = ParseError
+  type error =
+    | UnexpectedChar of Uchar.t * Uchar.t
+    | UnexpectedEndOfText of Uchar.t
 
   let char c input =
     match Ustring.hd_tl input with
     | Some (u, tl) when Uchar.equal u c -> Ok (c, tl)
-    | _ -> Error ParseError
+    | Some (u, _) -> Error (UnexpectedChar (c, u))
+    | None -> Error (UnexpectedEndOfText c)
 end

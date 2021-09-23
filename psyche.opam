@@ -23,4 +23,5 @@ depends: [
   "ounit2" {with-test}
   "qcheck" {with-test}
   "odoc" {with-doc}
+  "bisect_ppx" {dev & >= "2.5.0"}
 ]
