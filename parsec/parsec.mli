@@ -27,13 +27,16 @@ val map : ('s, 't) parser -> f:('s -> 's2) -> ('s2, 't) parser
 (** [return v] は、必ず成功して [v] を出力するパーサを返す *)
 val return : 's -> ('s, 't) parser
 
+(** [bind p f] は「入力文字列をパーサ [p] でパースできた場合は、
+    出力値に関数 [f] を適用して得られたパーサで残る文字列をさらにパースする」パーサを返す *)
 val bind : ('s, 't) parser -> f:('s -> ('s2, 't) parser) -> ('s2, 't) parser
 
+(** パーサに対する applicative / monadic syntax *)
 module Syntax : sig
-  val return : 's -> ('s, 't) parser
-
+  (** applicative syntax *)
   val ( let+ ) : ('s, 't) parser -> ('s -> 's2) -> ('s2, 't) parser
 
+  (** monadic syntax *)
   val ( let* ) : ('s, 't) parser -> ('s -> ('s2, 't) parser) -> ('s2, 't) parser
 end
 

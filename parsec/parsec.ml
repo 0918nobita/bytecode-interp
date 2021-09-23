@@ -21,8 +21,6 @@ let bind p ~f input =
   run_parser p input |> Result.bind ~f:(fun (a, tl) -> run_parser (f a) tl)
 
 module Syntax = struct
-  let return = return
-
   let ( let+ ) a f = map a ~f
 
   let ( let* ) m f = bind m ~f
