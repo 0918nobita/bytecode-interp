@@ -1,5 +1,7 @@
 # Psyche
 
+[![Test](https://github.com/0918nobita/psyche/actions/workflows/test.yml/badge.svg)](https://github.com/0918nobita/psyche/actions/workflows/test.yml)
+
 Programming Language
 
 ## Build
