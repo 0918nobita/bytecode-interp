@@ -9,25 +9,6 @@ let i = Uchar.of_scalar_exn 0x3044 (* い *)
 
 let ka = Uchar.of_scalar_exn 0x304B (* か *)
 
-let test_char _ =
-  assert_equal
-    Parsec.(run_parser (BasicParsers.char a) input)
-    (Ok (a, Ustring.of_string "いうえお"))
-
-let test_char_err1 _ =
-  let open Parsec in
-  let open BasicParsers in
-  assert_equal
-    (run_parser (char a) (Ustring.of_string "かきくけこ"))
-    (Error (UnexpectedChar (a, ka)))
-
-let test_char_err2 _ =
-  let open Parsec in
-  let open BasicParsers in
-  assert_equal
-    (run_parser (char a) (Ustring.of_string ""))
-    (Error (UnexpectedEndOfText a))
-
 let test_empty _ = assert_equal Parsec.(run_parser empty input) (Error ())
 
 let test_map _ =
@@ -56,12 +37,10 @@ let test_bind _ =
 let suite =
   "Parsec"
   >::: [
-         "char" >:: test_char;
-         "char (unexpected char)" >:: test_char_err1;
-         "char (unexpected end of text)" >:: test_char_err2;
          "empty" >:: test_empty;
          "map" >:: test_map;
          "bind" >:: test_bind;
+         Char_parser.suite;
        ]
 
 let () = run_test_tt_main suite
