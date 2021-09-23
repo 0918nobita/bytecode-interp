@@ -13,12 +13,14 @@ let run_parser p input = p input
 let empty _ = Error ()
 
 let map parser ~f input =
-  run_parser parser input |> Result.map ~f:(fun (a, tl) -> (f a, tl))
+  parser input |> Result.map ~f:(fun (a, tl) -> (f a, tl))
+
+let apply fp vp input =
+  fp input |> Result.bind ~f:(fun (f, tl) -> (map vp ~f) tl)
 
 let return v input = Ok (v, input)
 
-let bind p ~f input =
-  run_parser p input |> Result.bind ~f:(fun (a, tl) -> run_parser (f a) tl)
+let bind p ~f input = p input |> Result.bind ~f:(fun (a, tl) -> (f a) tl)
 
 module Syntax = struct
   let ( let+ ) a f = map a ~f

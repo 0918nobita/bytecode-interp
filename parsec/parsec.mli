@@ -24,6 +24,9 @@ val empty : ('s, unit) parser
     [p] の実行に失敗した場合はエラーが伝播する *)
 val map : ('s, 't) parser -> f:('s -> 's2) -> ('s2, 't) parser
 
+(** 「関数を返すパーサ」と「その関数の引数として使える値を返すパーサ」を組み合わせて、「関数適用の結果を返すパーサ」を生成する *)
+val apply : ('a -> 'b, 't) parser -> ('a, 't) parser -> ('b, 't) parser
+
 (** [return v] は、必ず成功して [v] を出力するパーサを返す *)
 val return : 's -> ('s, 't) parser
 

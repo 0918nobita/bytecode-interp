@@ -22,6 +22,15 @@ let test_map _ =
   assert_equal (run_parser parser input)
     (Ok (i, Ustring.of_string "いうえお"))
 
+let test_apply _ =
+  let open Parsec in
+  let parser =
+    let fp = return (( + ) 3) in
+    let vp = return 4 in
+    apply fp vp
+  in
+  assert_equal (run_parser parser input) (Ok (7, input))
+
 let test_bind _ =
   let open Parsec in
   let parser =
@@ -39,6 +48,7 @@ let suite =
   >::: [
          "empty" >:: test_empty;
          "map" >:: test_map;
+         "apply" >:: test_apply;
          "bind" >:: test_bind;
          Char_parser.suite;
        ]
