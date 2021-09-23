@@ -4,25 +4,41 @@
 
 Programming Language
 
-## Build
+## Development
+
+### Install dependencies
+
+```bash
+opam install . --deps-only --with-test
+```
+
+### Build
 
 ```bash
 dune build
 ```
 
-## Execute
+### Execute
 
 ```bash
 dune exec compiler/compiler.exe
 ```
 
-## Test
+### Test
 
 ```bash
 dune runtest
 ```
 
-## Generate documentation
+If you want to get the coverage report, please run the following commands instead.  
+path : `_coverage`
+
+```bash
+dune runtest --instrument bisect_ppx --force
+bisect-ppx-report html
+```
+
+### Generate documentation
 
 ```bash
 dune build @doc
