@@ -20,7 +20,7 @@ val run_parser : ('s, 't) parser -> parser_input -> ('s, 't) parser_output
 (** 必ず失敗するパーサ *)
 val empty : ('s, unit) parser
 
-(** [map f p] は「パーサ [p] を実行して、成功した場合には出力に関数 [f] を適用して必ず成功するパーサ」を返す。
+(** [map p f] は「パーサ [p] を実行して、成功した場合には出力に関数 [f] を適用して必ず成功するパーサ」を返す。
     [p] の実行に失敗した場合はエラーが伝播する *)
 val map : ('s, 't) parser -> f:('s -> 's2) -> ('s2, 't) parser
 
