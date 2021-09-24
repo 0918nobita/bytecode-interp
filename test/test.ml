@@ -9,8 +9,6 @@ let i = Uchar.of_scalar_exn 0x3044 (* い *)
 
 let ka = Uchar.of_scalar_exn 0x304B (* か *)
 
-let test_empty _ = assert_equal Parsec.(run_parser empty input) (Error ())
-
 let test_map _ =
   let open Parsec in
   let parser =
@@ -31,6 +29,24 @@ let test_apply _ =
   in
   assert_equal (run_parser parser input) (Ok (7, input))
 
+let test_empty _ = assert_equal Parsec.(run_parser empty input) (Error ())
+
+let test_alt_left _ =
+  let open Parsec in
+  let open Basic_parsers in
+  let parser = char a <|> char i in
+  assert_equal
+    (run_parser parser @@ Ustring.of_string "あい")
+    (Ok (a, Ustring.of_string "い"))
+
+let test_alt_right _ =
+  let open Parsec in
+  let open Basic_parsers in
+  let parser = char a <|> char i in
+  assert_equal
+    (run_parser parser @@ Ustring.of_string "いあ")
+    (Ok (i, Ustring.of_string "あ"))
+
 let test_bind _ =
   let open Parsec in
   let parser =
@@ -46,9 +62,11 @@ let test_bind _ =
 let suite =
   "Parsec"
   >::: [
-         "empty" >:: test_empty;
          "map" >:: test_map;
          "apply" >:: test_apply;
+         "empty" >:: test_empty;
+         "alt (left)" >:: test_alt_left;
+         "alt (right)" >:: test_alt_right;
          "bind" >:: test_bind;
          Char_parser.suite;
        ]
