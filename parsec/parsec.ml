@@ -16,8 +16,6 @@ type ('s, 't) parser = parser_input -> ('s, 't) parser_output
 
 let run_parser p input = p input
 
-let empty _ = Error ()
-
 let map parser ~f input =
   let open Result_let_syntax in
   let+ a, tl = parser input in
@@ -27,6 +25,11 @@ let apply fp vp input =
   let open Result_let_syntax in
   let* f, tl = fp input in
   (map vp ~f) tl
+
+let empty _ = Error ()
+
+let ( <|> ) pa pb input =
+  match pa input with Ok _ as ok -> ok | Error _ -> pb input
 
 let return v input = Ok (v, input)
 
