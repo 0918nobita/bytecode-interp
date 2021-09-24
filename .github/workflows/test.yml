@@ -12,4 +12,5 @@ jobs:
           ocaml-compiler: 4.12.x
       - run: opam install . --deps-only --with-test
       - run: opam exec -- dune build
-      - run: opam exec -- dune runtest
+      - run: opam exec -- dune runtest --instrument-with bisect_ppx --force
+      - run: opam exec -- bisect-ppx-report send-to Codecov

@@ -34,7 +34,7 @@ If you want to get the coverage report, please run the following commands instea
 path : `_coverage`
 
 ```bash
-dune runtest --instrument bisect_ppx --force
+dune runtest --instrument-with bisect_ppx --force
 bisect-ppx-report html
 ```
 
