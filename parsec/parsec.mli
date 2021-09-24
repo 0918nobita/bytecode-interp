@@ -35,7 +35,7 @@ val return : 's -> ('s, 't) parser
 val bind : ('s, 't) parser -> f:('s -> ('s2, 't) parser) -> ('s2, 't) parser
 
 (** パーサに対する applicative / monadic syntax *)
-module Syntax : sig
+module Let_syntax : sig
   (** applicative syntax *)
   val ( let+ ) : ('s, 't) parser -> ('s -> 's2) -> ('s2, 't) parser
 
@@ -44,7 +44,7 @@ module Syntax : sig
 end
 
 (** 基本的なパーサ *)
-module BasicParsers : sig
+module Basic_parsers : sig
   (** 組み込みパーサでのパース処理の失敗を表す型 *)
   type error =
     | UnexpectedChar of Uchar.t * Uchar.t (** expected [char] [*] actual [char] *)

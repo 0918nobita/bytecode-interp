@@ -14,8 +14,8 @@ let test_empty _ = assert_equal Parsec.(run_parser empty input) (Error ())
 let test_map _ =
   let open Parsec in
   let parser =
-    let open BasicParsers in
-    let open Syntax in
+    let open Basic_parsers in
+    let open Let_syntax in
     let+ r = char a in
     r |> Uchar.succ_exn |> Uchar.succ_exn
   in
@@ -34,8 +34,8 @@ let test_apply _ =
 let test_bind _ =
   let open Parsec in
   let parser =
-    let open BasicParsers in
-    let open Syntax in
+    let open Basic_parsers in
+    let open Let_syntax in
     let* r1 = char a in
     let* r2 = char i in
     return (r1, r2)

@@ -1,5 +1,11 @@
 open Base
 
+module Result_let_syntax = struct
+  let ( let+ ) r f = Result.map r ~f
+
+  let ( let* ) r f = Result.bind r ~f
+end
+
 type parser_input = Ustring.t
 
 type remaining_str = Ustring.t
@@ -13,22 +19,29 @@ let run_parser p input = p input
 let empty _ = Error ()
 
 let map parser ~f input =
-  parser input |> Result.map ~f:(fun (a, tl) -> (f a, tl))
+  let open Result_let_syntax in
+  let+ a, tl = parser input in
+  (f a, tl)
 
 let apply fp vp input =
-  fp input |> Result.bind ~f:(fun (f, tl) -> (map vp ~f) tl)
+  let open Result_let_syntax in
+  let* f, tl = fp input in
+  (map vp ~f) tl
 
 let return v input = Ok (v, input)
 
-let bind p ~f input = p input |> Result.bind ~f:(fun (a, tl) -> (f a) tl)
+let bind p ~f input =
+  let open Result_let_syntax in
+  let* a, tl = p input in
+  (f a) tl
 
-module Syntax = struct
+module Let_syntax = struct
   let ( let+ ) a f = map a ~f
 
   let ( let* ) m f = bind m ~f
 end
 
-module BasicParsers = struct
+module Basic_parsers = struct
   type error =
     | UnexpectedChar of Uchar.t * Uchar.t
     | UnexpectedEndOfText of Uchar.t

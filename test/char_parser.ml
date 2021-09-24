@@ -9,19 +9,19 @@ let ka = Uchar.of_scalar_exn 0x304B (* か *)
 
 let test_char _ =
   assert_equal
-    Parsec.(run_parser (BasicParsers.char a) input)
+    Parsec.(run_parser (Basic_parsers.char a) input)
     (Ok (a, Ustring.of_string "いうえお"))
 
 let test_char_err1 _ =
   let open Parsec in
-  let open BasicParsers in
+  let open Basic_parsers in
   assert_equal
     (run_parser (char a) (Ustring.of_string "かきくけこ"))
     (Error (UnexpectedChar (a, ka)))
 
 let test_char_err2 _ =
   let open Parsec in
-  let open BasicParsers in
+  let open Basic_parsers in
   assert_equal
     (run_parser (char a) (Ustring.of_string ""))
     (Error (UnexpectedEndOfText a))
