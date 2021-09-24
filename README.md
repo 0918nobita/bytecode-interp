@@ -1,6 +1,6 @@
 # Psyche
 
-[![Test](https://github.com/0918nobita/psyche/actions/workflows/test.yml/badge.svg)](https://github.com/0918nobita/psyche/actions/workflows/test.yml)
+[![Test](https://github.com/0918nobita/psyche/actions/workflows/test.yml/badge.svg)](https://github.com/0918nobita/psyche/actions/workflows/test.yml) [![codecov](https://codecov.io/gh/0918nobita/psyche/branch/main/graph/badge.svg?token=C7XfE04oWR)](https://codecov.io/gh/0918nobita/psyche)
 
 Programming Language
 
