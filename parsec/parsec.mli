@@ -55,12 +55,9 @@ end
 
 (** 基本的なパーサ *)
 module Basic_parsers : sig
-  (** 組み込みパーサでのパース処理の失敗を表す型 *)
-  type error =
-    | UnexpectedChar of Uchar.t * Uchar.t (** expected [char] [*] actual [char] *)
-    | UnexpectedEndOfText of Uchar.t (** expected [char] *)
+  val anychar : (Uchar.t, [> `UnexpectedEndOfText]) parser
 
   (** 文字のパーサを返す。
       パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
-  val char : Uchar.t -> (Uchar.t, error) parser
+  val char : Uchar.t -> (Uchar.t, [> `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]) parser
 end

@@ -45,13 +45,12 @@ module Let_syntax = struct
 end
 
 module Basic_parsers = struct
-  type error =
-    | UnexpectedChar of Uchar.t * Uchar.t
-    | UnexpectedEndOfText of Uchar.t
+  let anychar = function
+    | [] -> Error `UnexpectedEndOfText
+    | u :: tl -> Ok (u, tl)
 
-  let char c input =
-    match Ustring.hd_tl input with
-    | Some (u, tl) when Uchar.equal u c -> Ok (c, tl)
-    | Some (u, _) -> Error (UnexpectedChar (c, u))
-    | None -> Error (UnexpectedEndOfText c)
+  let char c = function
+    | [] -> Error (`UnexpectedEndOfText c)
+    | u :: tl when Uchar.equal u c -> Ok (c, tl)
+    | u :: _ -> Error (`UnexpectedChar (c, u))
 end

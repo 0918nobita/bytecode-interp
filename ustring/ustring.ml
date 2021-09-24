@@ -20,5 +20,3 @@ let of_string str : t =
   done;
 
   Queue.to_list uchars
-
-let hd_tl = function hd :: tl -> Some (hd, tl) | _ -> None
