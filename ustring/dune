@@ -3,4 +3,5 @@
   (public_name psyche.ustring)
   (libraries
     base
-    uutf))
+    uutf)
+  (instrumentation (backend bisect_ppx)))
