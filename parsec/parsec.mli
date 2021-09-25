@@ -31,9 +31,15 @@ val apply : ('a -> 'b, 't) parser -> ('a, 't) parser -> ('b, 't) parser
 (** 必ず失敗するパーサ *)
 val empty : ('s, unit) parser
 
-(** [a <|> b] は「入力文字列をパーサ [a] でパースし、成功すればその結果を、
+(** [alt a b] は「入力文字列をパーサ [a] でパースし、成功すればその結果を、
     そうでなければ同じ入力文字列をパーサ [b] でパースした結果を返す」パーサを返す *)
-val (<|>) : ('s, 't) parser -> ('s, 't) parser -> ('s, 't) parser
+val alt : ('s, 't) parser -> ('s, 't) parser -> ('s, 't) parser
+
+(** [alt] を中置演算子にしたものを提供する *)
+module Alt_infix : sig
+  (** [alt] と同じ *)
+  val ( <|> ) : ('s, 't) parser -> ('s, 't) parser -> ('s, 't) parser
+end
 
 (** {1 Monad} *)
 

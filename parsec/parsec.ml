@@ -28,8 +28,12 @@ let apply fp vp input =
 
 let empty _ = Error ()
 
-let ( <|> ) pa pb input =
+let alt pa pb input =
   match pa input with Ok _ as ok -> ok | Error _ -> pb input
+
+module Alt_infix = struct
+  let ( <|> ) = alt
+end
 
 let return v input = Ok (v, input)
 

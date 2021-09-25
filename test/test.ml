@@ -34,6 +34,7 @@ let test_empty _ = assert_equal Parsec.(run_parser empty input) (Error ())
 let test_alt_left _ =
   let open Parsec in
   let open Basic_parsers in
+  let open Alt_infix in
   let parser = char a <|> char i in
   assert_equal
     (run_parser parser @@ Ustring.of_string "あい")
@@ -42,6 +43,7 @@ let test_alt_left _ =
 let test_alt_right _ =
   let open Parsec in
   let open Basic_parsers in
+  let open Alt_infix in
   let parser = char a <|> char i in
   assert_equal
     (run_parser parser @@ Ustring.of_string "いあ")
