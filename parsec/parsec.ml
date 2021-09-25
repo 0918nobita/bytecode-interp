@@ -42,11 +42,25 @@ let bind p ~f input =
   let* a, tl = p input in
   (f a) tl
 
-module Let_syntax = struct
-  let ( let+ ) a f = map a ~f
+module App = Applicative.Make2 (struct
+  type ('a, 'e) t = ('a, 'e) parser
 
-  let ( let* ) m f = bind m ~f
-end
+  let return = return
+
+  let apply = apply
+
+  let map = `Custom map
+end)
+
+module M = Monad.Make2 (struct
+  type ('a, 'e) t = ('a, 'e) parser
+
+  let bind = bind
+
+  let map = `Custom map
+
+  let return = return
+end)
 
 let _not p input =
   match p input with Ok (v, _) -> Error v | Error _ -> Ok ((), input)
@@ -60,3 +74,9 @@ let char c : (Uchar.t, char_error) parser = function
   | [] -> Error (`UnexpectedEndOfText c)
   | u :: tl when Uchar.equal u c -> Ok (c, tl)
   | u :: _ -> Error (`UnexpectedChar (c, u))
+
+module Let_syntax = struct
+  let ( let+ ) a f = map a ~f
+
+  let ( let* ) m f = bind m ~f
+end

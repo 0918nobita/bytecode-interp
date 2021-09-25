@@ -21,12 +21,14 @@ val run_parser : ('o, 'e) parser -> parser_input -> ('o, 'e) parser_output
     [p] の実行に失敗した場合はエラーが伝播する *)
 val map : ('o, 'e) parser -> f:('o -> 'o2) -> ('o2, 'e) parser
 
-(** {1 Applicative}*)
+(** {1 Applicative} *)
 
 (** 「関数を返すパーサ」と「その関数の引数として使える値を返すパーサ」を組み合わせて、「関数適用の結果を返すパーサ」を返す *)
-val apply : ('a -> 'b, 'e) parser -> ('a, 'e) parser -> ('b, 'e) parser
+val apply : ('a -> 'b, 't) parser -> ('a, 't) parser -> ('b, 't) parser
 
-(** {1 Alternative}*)
+module App : Applicative.S2 with type ('a, 'b) t := ('a, 'b) parser
+
+(** {1 Alternative} *)
 
 (** 必ず失敗するパーサ *)
 val empty : ('o, unit) parser
@@ -50,14 +52,7 @@ val return : 'o -> ('o, 'e) parser
     出力値に関数 [f] を適用して得られたパーサで残る文字列をさらにパースする」パーサを返す *)
 val bind : ('o, 'e) parser -> f:('o -> ('o2, 'e) parser) -> ('o2, 'e) parser
 
-(** パーサに対する applicative / monadic syntax *)
-module Let_syntax : sig
-  (** applicative syntax *)
-  val ( let+ ) : ('o, 'e) parser -> ('o -> 'o2) -> ('o2, 'e) parser
-
-  (** monadic syntax *)
-  val ( let* ) : ('o, 'e) parser -> ('o -> ('o2, 'e) parser) -> ('o2, 'e) parser
-end
+module M : Monad.S2 with type ('a, 'e) t := ('a, 'e) parser
 
 (** {1 その他のコンビネータ} *)
 
@@ -76,3 +71,13 @@ type char_error =
 (** 指定された1文字のパーサを返す。
     パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
 val char : Uchar.t -> (Uchar.t, char_error) parser
+
+(** {1 applicative / monadic syntax} *)
+
+module Let_syntax : sig
+  (** applicative syntax *)
+  val ( let+ ) : ('o, 'e) parser -> ('o -> 'o2) -> ('o2, 'e) parser
+
+  (** monadic syntax *)
+  val ( let* ) : ('o, 'e) parser -> ('o -> ('o2, 'e) parser) -> ('o2, 'e) parser
+end
