@@ -10,9 +10,9 @@ type parser_input = Ustring.t
 
 type remaining_str = Ustring.t
 
-type ('s, 't) parser_output = ('s * remaining_str, 't) Result.t
+type ('o, 'e) parser_output = ('o * remaining_str, 'e) Result.t
 
-type ('s, 't) parser = parser_input -> ('s, 't) parser_output
+type ('o, 'e) parser = parser_input -> ('o, 'e) parser_output
 
 let run_parser p input = p input
 

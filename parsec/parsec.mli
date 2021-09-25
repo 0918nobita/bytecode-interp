@@ -9,61 +9,61 @@ type parser_input = Ustring.t
 type remaining_str = Ustring.t
 
 (** パーサの出力 *)
-type ('s, 't) parser_output = ('s * remaining_str, 't) Result.t
+type ('o, 'e) parser_output = ('o * remaining_str, 'e) Result.t
 
 (** パーサを表す型 *)
-type ('s, 't) parser
+type ('o, 'e) parser
 
 (** 入力に対してパース処理を行う *)
-val run_parser : ('s, 't) parser -> parser_input -> ('s, 't) parser_output
+val run_parser : ('o, 'e) parser -> parser_input -> ('o, 'e) parser_output
 
 (** [map p f] は「パーサ [p] を実行して、成功した場合には出力に関数 [f] を適用して必ず成功するパーサ」を返す。
     [p] の実行に失敗した場合はエラーが伝播する *)
-val map : ('s, 't) parser -> f:('s -> 's2) -> ('s2, 't) parser
+val map : ('o, 'e) parser -> f:('o -> 'o2) -> ('o2, 'e) parser
 
 (** {1 Applicative}*)
 
 (** 「関数を返すパーサ」と「その関数の引数として使える値を返すパーサ」を組み合わせて、「関数適用の結果を返すパーサ」を返す *)
-val apply : ('a -> 'b, 't) parser -> ('a, 't) parser -> ('b, 't) parser
+val apply : ('a -> 'b, 'e) parser -> ('a, 'e) parser -> ('b, 'e) parser
 
 (** {1 Alternative}*)
 
 (** 必ず失敗するパーサ *)
-val empty : ('s, unit) parser
+val empty : ('o, unit) parser
 
 (** [alt a b] は「入力文字列をパーサ [a] でパースし、成功すればその結果を、
     そうでなければ同じ入力文字列をパーサ [b] でパースした結果を返す」パーサを返す *)
-val alt : ('s, 't) parser -> ('s, 't) parser -> ('s, 't) parser
+val alt : ('o, 'e) parser -> ('o, 'e) parser -> ('o, 'e) parser
 
 (** [alt] を中置演算子にしたものを提供する *)
 module Alt_infix : sig
   (** [alt] と同じ *)
-  val ( <|> ) : ('s, 't) parser -> ('s, 't) parser -> ('s, 't) parser
+  val ( <|> ) : ('o, 'e) parser -> ('o, 'e) parser -> ('o, 'e) parser
 end
 
 (** {1 Monad} *)
 
 (** [return v] は、必ず成功して [v] を出力するパーサを返す *)
-val return : 's -> ('s, 't) parser
+val return : 'o -> ('o, 'e) parser
 
 (** [bind p f] は「入力文字列をパーサ [p] でパースできた場合は、
     出力値に関数 [f] を適用して得られたパーサで残る文字列をさらにパースする」パーサを返す *)
-val bind : ('s, 't) parser -> f:('s -> ('s2, 't) parser) -> ('s2, 't) parser
+val bind : ('o, 'e) parser -> f:('o -> ('o2, 'e) parser) -> ('o2, 'e) parser
 
 (** パーサに対する applicative / monadic syntax *)
 module Let_syntax : sig
   (** applicative syntax *)
-  val ( let+ ) : ('s, 't) parser -> ('s -> 's2) -> ('s2, 't) parser
+  val ( let+ ) : ('o, 'e) parser -> ('o -> 'o2) -> ('o2, 'e) parser
 
   (** monadic syntax *)
-  val ( let* ) : ('s, 't) parser -> ('s -> ('s2, 't) parser) -> ('s2, 't) parser
+  val ( let* ) : ('o, 'e) parser -> ('o -> ('o2, 'e) parser) -> ('o2, 'e) parser
 end
 
 (** {1 その他のコンビネータ} *)
 
 (** [_not p] は「パーサ [p] でパースして失敗した場合は成功として [()] を出力し、
     そうでなければパーサ [p] の出力値をエラー内容とする」パーサを返す *)
-val _not : ('s, 't) parser -> (unit, 's) parser
+val _not : ('o, 'e) parser -> (unit, 'o) parser
 
 (** {1 基本的なパーサ} *)
 
