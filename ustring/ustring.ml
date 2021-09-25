@@ -2,6 +2,8 @@ open Base
 
 type t = Uchar.t list
 
+let empty = []
+
 let of_string str : t =
   let decoder =
     let nln = `Readline (Uchar.of_scalar_exn 0x000A) in

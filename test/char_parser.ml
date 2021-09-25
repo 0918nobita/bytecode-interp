@@ -1,7 +1,6 @@
 open Base
 open OUnit2
 open Parsec
-open Basic_parsers
 
 let input = Ustring.of_string "あいうえお"
 

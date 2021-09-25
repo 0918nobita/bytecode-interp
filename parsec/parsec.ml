@@ -48,16 +48,15 @@ module Let_syntax = struct
   let ( let* ) m f = bind m ~f
 end
 
-module Basic_parsers = struct
-  let anychar = function
-    | [] -> Error `UnexpectedEndOfText
-    | u :: tl -> Ok (u, tl)
+let _not p input =
+  match p input with Ok (v, _) -> Error v | Error _ -> Ok ((), input)
 
-  type char_error =
-    [ `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
+let anychar = function [] -> Error `UnexpectedEndOfText | u :: tl -> Ok (u, tl)
 
-  let char c : (Uchar.t, char_error) parser = function
-    | [] -> Error (`UnexpectedEndOfText c)
-    | u :: tl when Uchar.equal u c -> Ok (c, tl)
-    | u :: _ -> Error (`UnexpectedChar (c, u))
-end
+type char_error =
+  [ `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
+
+let char c : (Uchar.t, char_error) parser = function
+  | [] -> Error (`UnexpectedEndOfText c)
+  | u :: tl when Uchar.equal u c -> Ok (c, tl)
+  | u :: _ -> Error (`UnexpectedChar (c, u))

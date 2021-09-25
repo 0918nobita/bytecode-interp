@@ -59,15 +59,20 @@ module Let_syntax : sig
   val ( let* ) : ('s, 't) parser -> ('s -> ('s2, 't) parser) -> ('s2, 't) parser
 end
 
-(** 基本的なパーサ *)
-module Basic_parsers : sig
-  (** 任意の1文字のパーサ *)
-  val anychar : (Uchar.t, [> `UnexpectedEndOfText]) parser
+(** {1 その他のコンビネータ} *)
 
-  type char_error =
-    [ `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
+(** [_not p] は「パーサ [p] でパースして失敗した場合は成功として [()] を出力し、
+    そうでなければパーサ [p] の出力値をエラー内容とする」パーサを返す *)
+val _not : ('s, 't) parser -> (unit, 's) parser
 
-  (** 指定された1文字のパーサを返す。
-      パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
-  val char : Uchar.t -> (Uchar.t, char_error) parser
-end
+(** {1 基本的なパーサ} *)
+
+(** 任意の1文字のパーサ *)
+val anychar : (Uchar.t, [`UnexpectedEndOfText]) parser
+
+type char_error =
+  [ `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
+
+(** 指定された1文字のパーサを返す。
+    パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
+val char : Uchar.t -> (Uchar.t, char_error) parser
