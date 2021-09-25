@@ -58,12 +58,10 @@ module Basic_parsers : sig
   (** 任意の1文字のパーサ *)
   val anychar : (Uchar.t, [> `UnexpectedEndOfText]) parser
 
+  type char_error =
+    [ `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
+
   (** 指定された1文字のパーサを返す。
       パーサ [char c] は入力文字列の先頭が [c] の場合に成功して [c] を出力し、そうでなければ失敗する *)
-  val char :
-    Uchar.t
-    -> (
-        Uchar.t,
-        [> `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
-      ) parser
+  val char : Uchar.t -> (Uchar.t, char_error) parser
 end

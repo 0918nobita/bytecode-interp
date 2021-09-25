@@ -49,7 +49,10 @@ module Basic_parsers = struct
     | [] -> Error `UnexpectedEndOfText
     | u :: tl -> Ok (u, tl)
 
-  let char c = function
+  type char_error =
+    [ `UnexpectedChar of Uchar.t * Uchar.t | `UnexpectedEndOfText of Uchar.t ]
+
+  let char c : (Uchar.t, char_error) parser = function
     | [] -> Error (`UnexpectedEndOfText c)
     | u :: tl when Uchar.equal u c -> Ok (c, tl)
     | u :: _ -> Error (`UnexpectedChar (c, u))
