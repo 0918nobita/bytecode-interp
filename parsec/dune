@@ -3,5 +3,5 @@
   (public_name psyche.parsec)
   (libraries
     base
-    psyche.ustring)
+    psyche.unicode)
   (instrumentation (backend bisect_ppx)))

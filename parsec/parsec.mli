@@ -3,10 +3,10 @@
 open Base
 
 (** パーサの入力 *)
-type parser_input = Ustring.t
+type parser_input = Unicode.t
 
 (** パースした後に残った文字列 *)
-type remaining_str = Ustring.t
+type remaining_str = Unicode.t
 
 (** パーサの出力 *)
 type ('o, 'e) parser_output = ('o * remaining_str, 'e) Result.t

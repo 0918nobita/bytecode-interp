@@ -2,7 +2,7 @@ open Base
 open OUnit2
 open Parsec
 
-let input = Ustring.of_string "あいうえお"
+let input = Unicode.of_string "あいうえお"
 
 let a = Uchar.of_scalar_exn 0x3042 (* あ *)
 
@@ -10,29 +10,29 @@ let ka = Uchar.of_scalar_exn 0x304B (* か *)
 
 let test_anychar _ =
   assert_equal (run_parser anychar input)
-    (Ok (a, Ustring.of_string "いうえお"));
+    (Ok (a, Unicode.of_string "いうえお"));
   assert_equal
-    (run_parser anychar (Ustring.of_string "かきくけこ"))
-    (Ok (ka, Ustring.of_string "きくけこ"))
+    (run_parser anychar (Unicode.of_string "かきくけこ"))
+    (Ok (ka, Unicode.of_string "きくけこ"))
 
 let test_anychar_err _ =
   assert_equal
-    (run_parser anychar (Ustring.of_string ""))
+    (run_parser anychar (Unicode.of_string ""))
     (Error `UnexpectedEndOfText)
 
 let test_char _ =
   assert_equal
     (run_parser (char a) input)
-    (Ok (a, Ustring.of_string "いうえお"))
+    (Ok (a, Unicode.of_string "いうえお"))
 
 let test_char_err1 _ =
   assert_equal
-    (run_parser (char a) (Ustring.of_string "かきくけこ"))
+    (run_parser (char a) (Unicode.of_string "かきくけこ"))
     (Error (`UnexpectedChar (a, ka)))
 
 let test_char_err2 _ =
   assert_equal
-    (run_parser (char a) (Ustring.of_string ""))
+    (run_parser (char a) (Unicode.of_string ""))
     (Error (`UnexpectedEndOfText a))
 
 let suite =

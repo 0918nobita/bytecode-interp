@@ -1,6 +1,6 @@
 (library
-  (name ustring)
-  (public_name psyche.ustring)
+  (name unicode)
+  (public_name psyche.unicode)
   (libraries
     base
     uutf)

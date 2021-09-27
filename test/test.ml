@@ -2,7 +2,7 @@ open Base
 open OUnit2
 open Parsec
 
-let input = Ustring.of_string "あいうえお"
+let input = Unicode.of_string "あいうえお"
 
 let a = Uchar.of_scalar_exn 0x3042 (* あ *)
 
@@ -18,7 +18,7 @@ let test_map =
     r |> Uchar.succ_exn |> Uchar.succ_exn
   in
   assert_equal (run_parser parser input)
-    (Ok (i, Ustring.of_string "いうえお"))
+    (Ok (i, Unicode.of_string "いうえお"))
 
 let test_apply =
   "apply" >:: fun _ ->
@@ -37,16 +37,16 @@ let test_alt_left =
   let open Alt_infix in
   let parser = char a <|> char i in
   assert_equal
-    (run_parser parser @@ Ustring.of_string "あい")
-    (Ok (a, Ustring.of_string "い"))
+    (run_parser parser @@ Unicode.of_string "あい")
+    (Ok (a, Unicode.of_string "い"))
 
 let test_alt_right =
   "alt (right)" >:: fun _ ->
   let open Alt_infix in
   let parser = char a <|> char i in
   assert_equal
-    (run_parser parser @@ Ustring.of_string "いあ")
-    (Ok (i, Ustring.of_string "あ"))
+    (run_parser parser @@ Unicode.of_string "いあ")
+    (Ok (i, Unicode.of_string "あ"))
 
 let test_bind =
   "bind" >:: fun _ ->
@@ -57,17 +57,17 @@ let test_bind =
     return (r1, r2)
   in
   assert_equal (run_parser parser input)
-    (Ok ((a, i), Ustring.of_string "うえお"))
+    (Ok ((a, i), Unicode.of_string "うえお"))
 
 let test_not =
   "not" >:: fun _ ->
   let parser = _not anychar in
-  assert_equal (run_parser parser Ustring.empty) (Ok ((), Ustring.empty))
+  assert_equal (run_parser parser Unicode.empty) (Ok ((), Unicode.empty))
 
 let test_not_err1 =
   "not (char found)" >:: fun _ ->
   let parser = _not (char a) in
-  assert_equal (run_parser parser @@ Ustring.of_string "あいう") (Error a)
+  assert_equal (run_parser parser @@ Unicode.of_string "あいう") (Error a)
 
 let suite =
   "Parsec"

@@ -6,9 +6,9 @@ module Result_let_syntax = struct
   let ( let* ) r f = Result.bind r ~f
 end
 
-type parser_input = Ustring.t
+type parser_input = Unicode.t
 
-type remaining_str = Ustring.t
+type remaining_str = Unicode.t
 
 type ('o, 'e) parser_output = ('o * remaining_str, 'e) Result.t
 
