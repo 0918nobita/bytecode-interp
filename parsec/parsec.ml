@@ -1,9 +1,7 @@
-open Base
-
 module Result_let_syntax = struct
-  let ( let+ ) r f = Result.map r ~f
+  let ( let+ ) r f = Result.map f r
 
-  let ( let* ) r f = Result.bind r ~f
+  let ( let* ) = Result.bind
 end
 
 type parser_input = Unicode.t
@@ -41,26 +39,6 @@ let bind p ~f input =
   let open Result_let_syntax in
   let* a, tl = p input in
   (f a) tl
-
-module App = Applicative.Make2 (struct
-  type ('a, 'e) t = ('a, 'e) parser
-
-  let return = return
-
-  let apply = apply
-
-  let map = `Custom map
-end)
-
-module M = Monad.Make2 (struct
-  type ('a, 'e) t = ('a, 'e) parser
-
-  let bind = bind
-
-  let map = `Custom map
-
-  let return = return
-end)
 
 let _not p input =
   match p input with Ok (v, _) -> Error v | Error _ -> Ok ((), input)

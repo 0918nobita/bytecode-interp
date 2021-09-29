@@ -1,7 +1,5 @@
 (** パーサコンビネータ *)
 
-open Base
-
 (** パーサの入力 *)
 type parser_input = Unicode.t
 
@@ -26,8 +24,6 @@ val map : ('o, 'e) parser -> f:('o -> 'o2) -> ('o2, 'e) parser
 (** 「関数を返すパーサ」と「その関数の引数として使える値を返すパーサ」を組み合わせて、「関数適用の結果を返すパーサ」を返す *)
 val apply : ('a -> 'b, 't) parser -> ('a, 't) parser -> ('b, 't) parser
 
-module App : Applicative.S2 with type ('a, 'b) t := ('a, 'b) parser
-
 (** {1 Alternative} *)
 
 (** 必ず失敗するパーサ *)
@@ -51,8 +47,6 @@ val return : 'o -> ('o, 'e) parser
 (** [bind p f] は「入力文字列をパーサ [p] でパースできた場合は、
     出力値に関数 [f] を適用して得られたパーサで残る文字列をさらにパースする」パーサを返す *)
 val bind : ('o, 'e) parser -> f:('o -> ('o2, 'e) parser) -> ('o2, 'e) parser
-
-module M : Monad.S2 with type ('a, 'e) t := ('a, 'e) parser
 
 (** {1 その他のコンビネータ} *)
 

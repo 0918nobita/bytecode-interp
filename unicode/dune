@@ -1,7 +1,0 @@
-(library
-  (name unicode)
-  (public_name psyche.unicode)
-  (libraries
-    base
-    uutf)
-  (instrumentation (backend bisect_ppx)))
