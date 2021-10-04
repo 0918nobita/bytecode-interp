@@ -1,23 +1,23 @@
-Require Import Ascii String.
+Require Import Ascii String NArith.
 Require Extraction.
-Import Hexadecimal.
+Open Scope N_scope.
+Open Scope type_scope.
 
-Local Definition code_point_upper_bound :=
-  Nat.of_num_uint
-    (Number.UIntHexadecimal
-      (D1 (D0 (Df (Df (Df (Df Nil))))))).
+Definition code_point_upper_bound := 0x10FFFF.
 
-Definition code_point := { n : nat | n <= code_point_upper_bound }.
+Definition code_point_domain_a := { n : N | n <= 0x7F }.
 
-Lemma two_le_upper_bound : 2 <= code_point_upper_bound.
-Proof.
-  apply le_n_S.
-  apply le_n_S.
-  apply le_0_n.
-Qed.
+Definition code_point_domain_b := { n : N | 0x80 <= n <= 0x7FF }.
 
-Definition code_point_example :=
-  exist (fun x => x <= code_point_upper_bound) 2 two_le_upper_bound.
+Definition code_point_domain_c := { n : N | 0x800 <= n <= 0xFFFF }.
+
+Definition code_point_domain_d := { n : N | 0x10000 <= n <= code_point_upper_bound }.
+
+Definition code_point :=
+  code_point_domain_a
+  + code_point_domain_b
+  + code_point_domain_c
+  + code_point_domain_d.
 
 Extract Inductive bool =>
   "bool"
