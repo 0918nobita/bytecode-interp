@@ -112,6 +112,16 @@ Section NaturalNumber.
   Qed.
 End NaturalNumber.
 
+Section Logic.
+  Lemma contraposition : forall A B : Prop, (A -> B) -> ~B -> ~A.
+  Proof.
+    rewrite /not. (* not の定義を紐解く (not = fun A : Prop => A -> False) *)
+    intros A0 B0 AtoB notB.
+    (* move / はスタックのトップに対して補題を適用する (apply が十分条件への変換だったのに対し、こちらは必要条件への変換) *)
+    by move /AtoB. (* A0 -> B0 をもとに、 A0 -> False を B0 -> False に変換 *)
+  Qed.
+End Logic.
+
 (*
 Require Import Ascii String NArith.
 Require Extraction.
