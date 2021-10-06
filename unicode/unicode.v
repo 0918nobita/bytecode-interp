@@ -29,6 +29,28 @@ Section HilbertSAxiom.
     by [].
     by [].
   Qed.
+
+  Theorem HS2 : (A -> (B -> C)) -> ((A -> B) -> (A -> C)).
+  Proof.
+    move=> AtoBtoC_is_true AtoB_is_true A_is_true. (* 連続する move=> はまとめられる *)
+    (* ; でタクティクを連結できる *)
+    (* tactic1 ; tactic2 ; tactic3 と書けば、最初に tactic1 を、その結果すべてに tactic2 を、さらにその結果すべてに tactic3 を適用する *)
+    (* 分岐それぞれに対して別々のタクティクを適用したい場合、[ tactics1 | tactics2 | ... ] のように書く *)
+    apply: (MP B C); [apply: (MP A (B -> C)) | apply: (MP A B)]; by [].
+    (* by apply: (MP B C); [apply: (MP A (B -> C)) | apply: (MP A B)]. とも書ける *)
+  Qed.
+
+  Theorem HS3 : (A -> (B -> C)) -> ((A -> B) -> (A -> C)).
+  Proof.
+    move=> AtoBtoC_is_true AtoB_is_true A_is_true.
+    (*
+      move: (AtoB_is_true A_is_true).
+      move: A_is_true.
+      by [].
+      これを短く書くと以下のようになる
+    *)
+    by move: A_is_true (AtoB_is_true A_is_true). (* move: に証明を複数与えると、右から順に、スタックのトップに追加していく *)
+  Qed.
 End HilbertSAxiom.
 
 (*
