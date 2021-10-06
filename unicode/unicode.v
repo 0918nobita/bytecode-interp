@@ -1,4 +1,4 @@
-From mathcomp Require Import ssreflect.
+From mathcomp Require Import ssreflect ssrnat.
 
 Section ModusPonens.
   Variables X Y : Prop.
@@ -52,6 +52,38 @@ Section HilbertSAxiom.
     by move: A_is_true (AtoB_is_true A_is_true). (* move: に証明を複数与えると、右から順に、スタックのトップに追加していく *)
   Qed.
 End HilbertSAxiom.
+
+Section NaturalNumber.
+  (* Inductive nat : Set := O : nat | S : nat -> nat *)
+  (* addn = nosimpl addn_rec *)
+  (* addn_rec = Nat.add *)
+  (*
+    Nat.add =
+      fix add (n m : nat) {struct n} : nat :=
+        match n with
+        | 0 => m
+        | p.+1 => (add p m).+1
+        end
+    ここでの .+1 は、ssrnat で定義された S を表す記法
+  *)
+
+  (* Notation "x = y" := (eq x y)    <- Coq の標準ライブラリで定義されている *)
+  (* Notation "m + n" := (addn m n)  <- ssrnat で定義されている *)
+
+  Lemma add_0_n_eq_n (n : nat) : 0 + n = n.
+  Proof. by []. (* addn の定義から明らか *) Qed.
+
+  Lemma add_n_3_eq_add_2_n_1 (n : nat) : n + 3 = 2 + n + 1.
+  Proof.
+    (* n.+3 = n.+3 を目指して等式変形を繰り返す *)
+    rewrite addn1. (* addn1 : forall n : nat, n + 1 = n.+1 *)
+    rewrite add2n. (* add2n : forall n : nat, 2 + n = n.+2 *)
+    (* addnC : ssrfun.commutative addn *)
+    (* ssrfun.commutative : fun (S T : Type) (op : S -> S -> T) => forall x y : S, op x y = op y x *)
+    (* つまり addnC は自然数の加算の可換則を表す *)
+    by rewrite addnC.
+  Qed.
+End NaturalNumber.
 
 (*
 Require Import Ascii String NArith.
