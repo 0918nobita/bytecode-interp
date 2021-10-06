@@ -83,6 +83,33 @@ Section NaturalNumber.
     (* つまり addnC は自然数の加算の可換則を表す *)
     by rewrite addnC.
   Qed.
+
+  Fixpoint sum (n : nat) : nat := if n is m.+1 then sum m + n else 0.
+
+  (*
+    S = 0 +       1 +       2 + ... + n
+    S = n + (n - 1) + (n - 2) + ... + 0
+    2S = n * (n + 1)
+  *)
+  Lemma sumGauss (n : nat) : sum n * 2 = (n + 1) * n.
+  Proof.
+    elim: n. (* トップに対する数学的帰納法 (move: n. elim.) *)
+    by [].
+    move=> n IHn.
+    rewrite mulnC. (* 乗算の可換則 *)
+    (* rewrite (_ : A = B) は A を B で置換し、A = B をサブゴールに追加する *)
+    (* last first はサブゴールを逆順にする *)
+    rewrite (_ : sum (n.+1) = n.+1 + sum n); last first.
+    simpl.
+    apply addnC.
+    rewrite mulnDr.       (* 右分配法則 *)
+    rewrite mulnC in IHn. (* IHn を mulnC で等式変形する *)
+    by rewrite
+      IHn
+      2!addn1      (* addn1 で 2 回等式変形する*)
+      [_ * n]mulnC (* _ * n の形をしている部分だけを mulnC で等式変形 *)
+      -mulnDl.     (* 左分配法則 (- が付いているので mulnDl の右辺にあたるものを左辺で置き換える) *)
+  Qed.
 End NaturalNumber.
 
 (*
