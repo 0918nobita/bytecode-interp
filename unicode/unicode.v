@@ -113,13 +113,17 @@ Section NaturalNumber.
 End NaturalNumber.
 
 Section Logic.
-  Lemma contraposition : forall A B : Prop, (A -> B) -> ~B -> ~A.
+  (* 対偶 (contraposition) *)
+  Lemma contrap1 : forall A B : Prop, (A -> B) -> ~B -> ~A.
   Proof.
     rewrite /not. (* not の定義を紐解く (not = fun A : Prop => A -> False) *)
-    intros A0 B0 AtoB notB.
+    intros ? ? AtoB notB.
     (* move / はスタックのトップに対して補題を適用する (apply が十分条件への変換だったのに対し、こちらは必要条件への変換) *)
-    by move /AtoB. (* A0 -> B0 をもとに、 A0 -> False を B0 -> False に変換 *)
+    by move /AtoB. (* A -> B をもとに、 A -> False を B -> False に変換 *)
   Qed.
+
+  Lemma contrap2 : forall A B : Prop, (A -> B) -> ~B -> ~A.
+  Proof. by move=> ? ? AtoB notB /AtoB /notB. Qed.
 End Logic.
 
 (*
