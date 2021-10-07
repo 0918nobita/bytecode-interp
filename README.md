@@ -9,6 +9,8 @@ Programming Language
 ### Install dependencies
 
 ```bash
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam update
 opam install . --deps-only --with-test
 ```
 
