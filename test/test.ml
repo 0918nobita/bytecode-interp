@@ -1,21 +1,20 @@
-open Base
 open OUnit2
 open Parsec
 
 let input = Unicode.of_string "あいうえお"
 
-let a = Uchar.of_scalar_exn 0x3042 (* あ *)
+let a = Uchar.of_int 0x3042 (* あ *)
 
-let i = Uchar.of_scalar_exn 0x3044 (* い *)
+let i = Uchar.of_int 0x3044 (* い *)
 
-let ka = Uchar.of_scalar_exn 0x304B (* か *)
+let ka = Uchar.of_int 0x304B (* か *)
 
 let test_map =
   "map" >:: fun _ ->
   let parser =
     let open Let_syntax in
     let+ r = char a in
-    r |> Uchar.succ_exn |> Uchar.succ_exn
+    r |> Uchar.succ |> Uchar.succ
   in
   assert_equal (run_parser parser input)
     (Ok (i, Unicode.of_string "いうえお"))

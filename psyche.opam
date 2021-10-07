@@ -1,27 +1,37 @@
 opam-version: "2.0"
-maintainer: "0918nobita <nobita.0918@gmail.com>"
+version: "0.0.2"
 synopsis: "The Psyche programming language"
-description: "
-The Psyche programming language implemented in OCaml
-"
-authors: [
-  "0918nobita"
-]
+description:
+  "A compiler for the Psyche programming language implemented in OCaml and Coq"
+maintainer: ["Kodai Matsumoto <nobita.0918@gmail.com>"]
+authors: ["Kodai Matsumoto"]
+license: "MIT"
 homepage: "https://github.com/0918nobita/psyche"
-dev-repo: "git+https://github.com/0918nobita/psyche.git"
 bug-reports: "https://github.com/0918nobita/psyche/issues"
-build: [
-  ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
-  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
-]
 depends: [
-  "ocaml" {>= "4.08.0"}
-  "dune"
-  "base"
+  "dune" {>= "2.9"}
   "uutf"
+  "coq" {dev}
+  "coq-mathcomp-ssreflect" {dev}
   "ounit2" {with-test}
   "qcheck" {with-test}
+  "bisect_ppx" {dev & with-test}
   "odoc" {with-doc}
-  "bisect_ppx" {with-test & >= "2.5.0"}
 ]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/0918nobita/psyche.git"

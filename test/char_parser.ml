@@ -1,12 +1,11 @@
-open Base
 open OUnit2
 open Parsec
 
 let input = Unicode.of_string "あいうえお"
 
-let a = Uchar.of_scalar_exn 0x3042 (* あ *)
+let a = Uchar.of_int 0x3042 (* あ *)
 
-let ka = Uchar.of_scalar_exn 0x304B (* か *)
+let ka = Uchar.of_int 0x304B (* か *)
 
 let test_anychar _ =
   assert_equal (run_parser anychar input)

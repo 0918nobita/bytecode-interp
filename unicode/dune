@@ -1,7 +1,9 @@
 (library
   (name unicode)
   (public_name psyche.unicode)
-  (libraries
-    base
-    uutf)
-  (instrumentation (backend bisect_ppx)))
+  (libraries uutf))
+
+(coq.extraction
+  (prelude Extraction)
+  (extracted_modules extr)
+  (theories Psyche))

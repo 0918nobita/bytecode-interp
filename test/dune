@@ -1,7 +1,6 @@
 (executable
   (name test)
   (libraries
-    base
     ounit2
     qcheck
     psyche.parsec))

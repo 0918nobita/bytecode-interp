@@ -1,0 +1,4 @@
+(coq.theory
+  (package psyche)
+  (name Psyche)
+  (modules :standard))
