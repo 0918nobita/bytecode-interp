@@ -1,0 +1,4 @@
+rule compile
+  command = g++ -o $out $in
+
+build main: compile main.cc
