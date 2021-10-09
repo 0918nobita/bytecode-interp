@@ -3,7 +3,7 @@ exception UnboundIdentifier of ident
 fun evalExp (env : Env.env) =
   fn IdentExp ident =>
       (case Env.lookup ident env of
-          NONE        => raise UnboundIdentifier ident
+          NONE   => raise UnboundIdentifier ident
         | SOME v => v)
    | NumExp n => IntVal n
    | BinExp (lhs, binop, rhs) =>
