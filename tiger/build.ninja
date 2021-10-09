@@ -1,4 +1,0 @@
-rule compile
-  command = mlton -output $out $in
-
-build build/main: compile main.sml
