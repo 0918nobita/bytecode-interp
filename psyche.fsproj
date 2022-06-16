@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="EcmaScript.fs" />
+    <Compile Include="Ast.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
