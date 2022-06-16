@@ -1,11 +1,11 @@
 module Psyche.Ast
 
 type Expr =
-    | IntLit of int
+    | StrLit of string
 
     override this.ToString() =
         match this with
-        | IntLit x -> string x
+        | StrLit str -> str
 
 type Stmt =
     | Debug of Expr
@@ -15,12 +15,12 @@ type Stmt =
         | Debug expr -> $"debug %O{expr}"
 
 type Program =
-    | Program of Stmt list
+    | Program of Stmt array
 
     static member Unwrap((Program stmts)) = stmts
 
     override this.ToString() =
         this
         |> Program.Unwrap
-        |> List.map string
+        |> Array.map string
         |> String.concat "\n"

@@ -4,23 +4,11 @@ open EcmaScript
 
 [<EntryPoint>]
 let main _argv =
-    let ecmaScriptAst =
-        Program
-            {| Body =
-                [| ExpressionStatement(
-                       CallExpression
-                           {| Callee =
-                               MemberExpression
-                                   {| Object = Identifier "console"
-                                      Property = Identifier "log"
-                                      Computed = false
-                                      Optional = false |}
-                              Arguments = [| StringLiteral "Hello, world!" |]
-                              Optional = false |}
-                   ) |]
-               SourceType = Module |}
+    let program = Ast.Program [| Ast.Debug(Ast.StrLit "Hello, world!") |]
 
-    let astJsonContent = (ecmaScriptAst :> IJsonSerializable).ToJson()
+    let jsAst = Compiler.compile program
 
-    printfn "%O" astJsonContent
+    let jsAstJson = (jsAst :> IJsonSerializable).ToJson()
+
+    printfn "%O" jsAstJson
     0
