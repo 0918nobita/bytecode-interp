@@ -7,40 +7,47 @@ module EcmaScript =
         abstract member ToJson: unit -> JsonValue
 
     type Expression =
-        | CallExpression of callee: Expression * arguments: Expression array * optional: bool
+        | CallExpression of
+            {| Callee: Expression
+               Arguments: Expression array
+               Optional: bool |}
         | Identifier of string
-        | MemberExpression of object: Expression * property: Expression * computed: bool * optional: bool
+        | MemberExpression of
+            {| Object: Expression
+               Property: Expression
+               Computed: bool
+               Optional: bool |}
         | StringLiteral of string
 
         interface IJsonSerializable with
             member this.ToJson() =
                 match this with
-                | CallExpression (callee, arguments, optional) ->
-                    let calleeJson = (callee :> IJsonSerializable).ToJson()
+                | CallExpression payload ->
+                    let calleeJson = (payload.Callee :> IJsonSerializable).ToJson()
 
                     let argumentsJson =
-                        arguments
+                        payload.Arguments
                         |> Array.map (fun arg -> (arg :> IJsonSerializable).ToJson())
                         |> Encode.array
 
                     Encode.object [ "type", Encode.string "CallExpression"
                                     "callee", calleeJson
                                     "arguments", argumentsJson
-                                    "optional", Encode.bool optional ]
+                                    "optional", Encode.bool payload.Optional ]
 
                 | Identifier name ->
                     Encode.object [ "type", Encode.string "Identifier"
                                     "name", Encode.string name ]
 
-                | MemberExpression (object, property, computed, optional) ->
-                    let objectJson = (object :> IJsonSerializable).ToJson()
-                    let propertyJson = (property :> IJsonSerializable).ToJson()
+                | MemberExpression payload ->
+                    let objectJson = (payload.Object :> IJsonSerializable).ToJson()
+                    let propertyJson = (payload.Property :> IJsonSerializable).ToJson()
 
                     Encode.object [ "type", Encode.string "MemberExpression"
                                     "object", objectJson
                                     "property", propertyJson
-                                    "computed", Encode.bool computed
-                                    "optional", Encode.bool optional ]
+                                    "computed", Encode.bool payload.Computed
+                                    "optional", Encode.bool payload.Optional ]
 
                 | StringLiteral value ->
                     Encode.object [ "type", Encode.string "Literal"
@@ -121,16 +128,15 @@ let main argv =
         EcmaScript.Program
             {| Body =
                 [| EcmaScript.ExpressionStatement(
-                       EcmaScript.CallExpression(
-                           EcmaScript.MemberExpression(
-                               EcmaScript.Identifier "console",
-                               EcmaScript.Identifier "log",
-                               false,
-                               false
-                           ),
-                           [| EcmaScript.StringLiteral "Hello, world!" |],
-                           false
-                       )
+                       EcmaScript.CallExpression
+                           {| Callee =
+                               EcmaScript.MemberExpression
+                                   {| Object = EcmaScript.Identifier "console"
+                                      Property = EcmaScript.Identifier "log"
+                                      Computed = false
+                                      Optional = false |}
+                              Arguments = [| EcmaScript.StringLiteral "Hello, world!" |]
+                              Optional = false |}
                    ) |]
                SourceType = EcmaScript.Module |}
 
