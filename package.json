@@ -1,0 +1,6 @@
+{
+    "name": "psyche",
+    "dependencies": {
+        "astring": "^1.8.3"
+    }
+}

@@ -6,23 +6,80 @@ module EcmaScript =
     type IJsonSerializable =
         abstract member ToJson: unit -> JsonValue
 
+    type Expression =
+        | CallExpression of callee: Expression * arguments: Expression array * optional: bool
+        | Identifier of string
+        | MemberExpression of object: Expression * property: Expression * computed: bool * optional: bool
+        | StringLiteral of string
+
+        interface IJsonSerializable with
+            member this.ToJson() =
+                match this with
+                | CallExpression (callee, arguments, optional) ->
+                    let calleeJson = (callee :> IJsonSerializable).ToJson()
+
+                    let argumentsJson =
+                        arguments
+                        |> Array.map (fun arg -> (arg :> IJsonSerializable).ToJson())
+                        |> Encode.array
+
+                    Encode.object [ "type", Encode.string "CallExpression"
+                                    "callee", calleeJson
+                                    "arguments", argumentsJson
+                                    "optional", Encode.bool optional ]
+
+                | Identifier name ->
+                    Encode.object [ "type", Encode.string "Identifier"
+                                    "name", Encode.string name ]
+
+                | MemberExpression (object, property, computed, optional) ->
+                    let objectJson = (object :> IJsonSerializable).ToJson()
+                    let propertyJson = (property :> IJsonSerializable).ToJson()
+
+                    Encode.object [ "type", Encode.string "MemberExpression"
+                                    "object", objectJson
+                                    "property", propertyJson
+                                    "computed", Encode.bool computed
+                                    "optional", Encode.bool optional ]
+
+                | StringLiteral value ->
+                    Encode.object [ "type", Encode.string "Literal"
+                                    "value", Encode.string value
+                                    "raw", Encode.string $"\"{value}\"" ]
+
     type Statement =
-        | ExpressionStatement
+        | ExpressionStatement of Expression
         // TODO: Add more variants
 
         interface IJsonSerializable with
             member this.ToJson() =
                 match this with
-                | ExpressionStatement -> Encode.object [ "type", Encode.string "ExpressionStatement" ]
+                | ExpressionStatement expr ->
+                    Encode.object [ "type", Encode.string "ExpressionStatement"
+                                    "expression", (expr :> IJsonSerializable).ToJson() ]
+
+    type SourceType =
+        | Module
+        | Script
+
+        override this.ToString() =
+            match this with
+            | Module -> "module"
+            | Script -> "script"
 
     type Program =
-        | Program of {| Body: Statement array |}
+        | Program of
+            {| Body: Statement array
+               SourceType: SourceType |}
 
-        static member Unwrap((Program program)) = program.Body
+        static member Body((Program program)) = program.Body
+
+        static member SourceType((Program program)) = program.SourceType
 
         interface IJsonSerializable with
             member this.ToJson() =
-                let body = Program.Unwrap this
+                let body = Program.Body this
+                let sourceType = Program.SourceType this
 
                 let bodyJson =
                     body
@@ -30,7 +87,8 @@ module EcmaScript =
                     |> Encode.array
 
                 Encode.object [ "type", Encode.string "Program"
-                                "body", bodyJson ]
+                                "body", bodyJson
+                                "sourceType", Encode.string (string sourceType) ]
 
 type Expr =
     | IntLit of int
@@ -59,14 +117,26 @@ type Program =
 
 [<EntryPoint>]
 let main argv =
-    printfn "Psyche Compiler"
-    printfn "%O" <| Program [ Debug(IntLit 42) ]
-
     let ecmaScriptAst =
-        EcmaScript.Program {| Body = [| EcmaScript.ExpressionStatement |] |}
+        EcmaScript.Program
+            {| Body =
+                [| EcmaScript.ExpressionStatement(
+                       EcmaScript.CallExpression(
+                           EcmaScript.MemberExpression(
+                               EcmaScript.Identifier "console",
+                               EcmaScript.Identifier "log",
+                               false,
+                               false
+                           ),
+                           [| EcmaScript.StringLiteral "Hello, world!" |],
+                           false
+                       )
+                   ) |]
+               SourceType = EcmaScript.Module |}
 
-    (ecmaScriptAst :> EcmaScript.IJsonSerializable)
-        .ToJson()
-    |> printfn "%O"
+    let astJsonContent =
+        (ecmaScriptAst :> EcmaScript.IJsonSerializable)
+            .ToJson()
 
+    printfn "%O" astJsonContent
     0
