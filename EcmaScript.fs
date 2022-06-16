@@ -6,11 +6,16 @@ type IJsonSerializable =
     abstract member ToJson: unit -> JsonValue
 
 type Expression =
+    | BinaryExpression of
+        {| Left: Expression
+           Operator: string
+           Right: Expression |}
     | CallExpression of
         {| Callee: Expression
            Arguments: Expression array
            Optional: bool |}
     | Identifier of string
+    | IntLiteral of int
     | MemberExpression of
         {| Object: Expression
            Property: Expression
@@ -21,6 +26,16 @@ type Expression =
     interface IJsonSerializable with
         member this.ToJson() =
             match this with
+            | BinaryExpression payload ->
+                let left = (payload.Left :> IJsonSerializable).ToJson()
+                let right = (payload.Right :> IJsonSerializable).ToJson()
+                let op = payload.Operator
+
+                Encode.object [ "type", Encode.string "BinaryExpression"
+                                "left", left
+                                "operator", Encode.string op
+                                "right", right ]
+
             | CallExpression payload ->
                 let calleeJson = (payload.Callee :> IJsonSerializable).ToJson()
 
@@ -33,6 +48,11 @@ type Expression =
                                 "callee", calleeJson
                                 "arguments", argumentsJson
                                 "optional", Encode.bool payload.Optional ]
+
+            | IntLiteral num ->
+                Encode.object [ "type", Encode.string "Literal"
+                                "value", Encode.int num
+                                "raw", Encode.string (string num) ]
 
             | Identifier name ->
                 Encode.object [ "type", Encode.string "Identifier"

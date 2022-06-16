@@ -3,8 +3,20 @@ module Psyche.Compiler
 open Psyche.Ast
 module ES = EcmaScript
 
-let compileExpr (expr: Expr) : ES.Expression =
+let rec compileExpr (expr: Expr) : ES.Expression =
     match expr with
+    | BinExpr payload ->
+        let lhs = compileExpr payload.Lhs
+        let rhs = compileExpr payload.Rhs
+        let op = string payload.Op
+
+        ES.BinaryExpression
+            {| Left = lhs
+               Operator = op
+               Right = rhs |}
+
+    | IntLit num -> ES.IntLiteral num
+
     | StrLit str -> ES.StringLiteral str
 
 let compileStmt (stmt: Stmt) : ES.Statement =
