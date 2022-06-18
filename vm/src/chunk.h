@@ -17,13 +17,14 @@ typedef struct {
     int count;
     int capacity;
     uint8_t* code;
+    int* lines;
     ValueArray constants;
 } Chunk;
 
 void initChunk(Chunk* chunk);
 
 // 要素を追加する際にキャパシティが足りない場合には、キャパシティを増やした新しい配列用の領域を確保し、全要素をコピーして参照を更新したうえで要素を追加し、カウントを増やす
-void writeChunk(Chunk* chunk, uint8_t byte);
+void writeChunk(Chunk* chunk, uint8_t byte, int line);
 
 // チャンクに定数を追加し、コンスタントプールにおけるインデックスを返す
 int addConstant(Chunk* chunk, Value value);
