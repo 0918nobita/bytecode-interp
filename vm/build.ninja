@@ -19,4 +19,4 @@ build memory.o: compile_obj memory.c
 build chunk.o:  compile_obj chunk.c
 build debug.o:  compile_obj debug.c
 build main:     compile_bin main.c chunk.o debug.o memory.o
-build test:     build_test test.cc
+build test:     build_test test.cc chunk.o memory.o
