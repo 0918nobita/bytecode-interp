@@ -5,10 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="EcmaScript.fs" />
-    <Compile Include="Ast.fs" />
-    <Compile Include="Compiler.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="src\EcmaScript.fs" />
+    <Compile Include="src\Ast\BinOp.fs" />
+    <Compile Include="src\Ast\Expr.fs" />
+    <Compile Include="src\Ast\Stmt.fs" />
+    <Compile Include="src\Ast\Program.fs" />
+    <Compile Include="src\Compiler.fs" />
+    <Compile Include="src\Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
