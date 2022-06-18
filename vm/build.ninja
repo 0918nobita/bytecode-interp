@@ -1,0 +1,13 @@
+cflags = -Wall -Wextra -O2
+
+rule compile_bin
+    command = gcc $cflags -o $out $in
+
+rule compile_obj
+    deps = gcc
+    depfile = $out.d
+    command = gcc -MMD -MP -MF $out.d $cflags -c -o $out $in
+
+build memory.o: compile_obj memory.c
+build chunk.o:  compile_obj chunk.c
+build main:     compile_bin main.c chunk.o memory.o
