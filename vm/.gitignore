@@ -1,4 +1,2 @@
-main
-test
+build/
 .ninja_*
-*.o

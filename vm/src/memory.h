@@ -1,6 +1,6 @@
 #pragma once
 
-int grow_capacity(int capacity);
+int growCapacity(int capacity);
 
 // oldSize が 0 なら新しいメモリ領域を確保する
 // oldSize が 0 でなく newSize が 0 ならメモリ領域を解放する

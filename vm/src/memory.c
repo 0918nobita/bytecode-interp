@@ -3,7 +3,7 @@
 
 #include "memory.h"
 
-int grow_capacity(capacity) {
+int growCapacity(capacity) {
     return capacity < 8 ? 8 : capacity * 2;
 }
 

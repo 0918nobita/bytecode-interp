@@ -15,8 +15,9 @@ rule build_test
     depfile = $out.d
     command = g++ -MMD -MP -MF $out.d $clags $$(pkg-config --cflags --libs cpputest) -o $out $in
 
-build memory.o: compile_obj memory.c
-build chunk.o:  compile_obj chunk.c
-build debug.o:  compile_obj debug.c
-build main:     compile_bin main.c chunk.o debug.o memory.o
-build test:     build_test test.cc chunk.o memory.o
+build build/memory.o: compile_obj src/memory.c
+build build/value.o:  compile_obj src/value.c
+build build/chunk.o:  compile_obj src/chunk.c
+build build/debug.o:  compile_obj src/debug.c
+build build/main:     compile_bin build/memory.o build/value.o build/chunk.o build/debug.o src/main.c
+build build/test:     build_test test/test.cc build/memory.o build/value.o build/chunk.o

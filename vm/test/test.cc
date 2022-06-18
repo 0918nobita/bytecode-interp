@@ -1,7 +1,7 @@
 #include <CppUTest/CommandLineTestRunner.h>
 
 extern "C" {
-#include "chunk.h"
+#include "../src/chunk.h"
 }
 
 TEST_GROUP(Chunk) {};
