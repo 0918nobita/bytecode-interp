@@ -1,34 +1,37 @@
-flags = -Wall -Wextra -O2 -MMD -MP
+builddir = build
+
+flags = -Wall -Wextra -O2
 b = build
 s = src
 
-rule compile_bin
+rule compile
     deps = gcc
     depfile = $out.d
-    command = gcc $flags -MF $out.d -o $out $in
+    command = gcc $flags -MMD -MP -MF $out.d -c -o $out $in
 
-rule compile_obj
+rule link
+    command = gcc $flags -o $out $in
+
+rule test
     deps = gcc
     depfile = $out.d
-    command = gcc $flags -MF $out.d -c -o $out $in
+    command = g++ $flags -MMD -MP -MF $out.d $$(pkg-config --cflags --libs cpputest) -o $out $in
 
-rule build_test
-    deps = gcc
-    depfile = $out.d
-    command = g++ $flags -MF $out.d $$(pkg-config --cflags --libs cpputest) -o $out $in
+build $b/memory.o: compile $s/memory.c
+build $b/value.o:  compile $s/value.c
+build $b/chunk.o:  compile $s/chunk.c
+build $b/debug.o:  compile $s/debug.c
+build $b/main.o:   compile $s/main.c
 
-build $b/memory.o: compile_obj $s/memory.c
+build $b/main: link $b/memory.o $
+                    $b/value.o $
+                    $b/chunk.o $
+                    $b/debug.o $
+                    $b/main.o
 
-build $b/value.o: compile_obj $s/value.c
-
-build $b/chunk.o: compile_obj $s/chunk.c
-
-build $b/debug.o: compile_obj $s/debug.c
-
-build $b/main: compile_bin $
-    $b/memory.o $b/value.o $b/chunk.o $b/debug.o $s/main.c
-
-build build/test: build_test $
-    $b/memory.o $b/value.o $b/chunk.o test/test.cc
+build $b/test: test $b/memory.o $
+                    $b/value.o $
+                    $b/chunk.o $
+                    test/test.cc
 
 default $b/main $b/test
