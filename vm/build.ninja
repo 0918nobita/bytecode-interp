@@ -16,8 +16,17 @@ rule build_test
     command = g++ -MMD -MP -MF $out.d $clags $$(pkg-config --cflags --libs cpputest) -o $out $in
 
 build build/memory.o: compile_obj src/memory.c
-build build/value.o:  compile_obj src/value.c
-build build/chunk.o:  compile_obj src/chunk.c
-build build/debug.o:  compile_obj src/debug.c
-build build/main:     compile_bin build/memory.o build/value.o build/chunk.o build/debug.o src/main.c
-build build/test:     build_test test/test.cc build/memory.o build/value.o build/chunk.o
+
+build build/value.o: compile_obj src/value.c
+
+build build/chunk.o: compile_obj src/chunk.c
+
+build build/debug.o: compile_obj src/debug.c
+
+build build/main: compile_bin $
+    build/memory.o build/value.o build/chunk.o build/debug.o src/main.c
+
+build build/test: build_test $
+    build/memory.o build/value.o build/chunk.o test/test.cc
+
+default build/main build/test
