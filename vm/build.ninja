@@ -1,39 +1,47 @@
 builddir = build
 
-flags = -Wall -Wextra -O2
-b = build
-s = src
+cflags = -Wall -Wextra -O2 -D_DEBUG
 
 rule compile
     deps = gcc
     depfile = $out.d
-    command = gcc $flags -MMD -MP -MF $out.d -c -o $out $in
+    command = gcc $cflags -MMD -MP -MF $out.d -c -o $out $in
 
-rule link
-    command = gcc $flags -o $out $in
+rule link_main
+    deps = gcc
+    depfile = $out.d
+    command = gcc $cflags -o $out -L./build -lcorevm $in
+
+rule create_lib
+    command = ar rcs $out $in
 
 rule test
     deps = gcc
     depfile = $out.d
-    command = g++ $flags -MMD -MP -MF $out.d $$(pkg-config --cflags --libs cpputest) -o $out $in
+    command = g++ $cflags $
+                -MMD -MP -MF $out.d $
+                $$(pkg-config --cflags --libs cpputest) $
+                -o $out $
+                -L./build -lcorevm $
+                $in
 
-build $b/memory.o: compile $s/memory.c
-build $b/value.o:  compile $s/value.c
-build $b/chunk.o:  compile $s/chunk.c
-build $b/debug.o:  compile $s/debug.c
-build $b/vm.o:     compile $s/vm.c
-build $b/main.o:   compile $s/main.c
+build build/Core/chunk.o:  compile Core/chunk.c
+build build/Core/debug.o:  compile Core/debug.c
+build build/Core/memory.o: compile Core/memory.c
+build build/Core/value.o:  compile Core/value.c
+build build/Core/vm.o:     compile Core/vm.c
 
-build $b/main: link $b/memory.o $
-                    $b/value.o $
-                    $b/chunk.o $
-                    $b/debug.o $
-                    $b/vm.o $
-                    $b/main.o
+build build/libcorevm.a: create_lib $
+    build/Core/chunk.o $
+    build/Core/debug.o $
+    build/Core/memory.o $
+    build/Core/value.o $
+    build/Core/vm.o
 
-build $b/test: test $b/memory.o $
-                    $b/value.o $
-                    $b/chunk.o $
-                    test/test.cc
+build build/Example/main.o: compile Example/main.c
 
-default $b/main $b/test
+build build/main: link_main build/Example/main.o || build/libcorevm.a
+
+build build/test: test Test/test.cc || build/libcorevm.a
+
+default build/libcorevm.a build/main build/test
