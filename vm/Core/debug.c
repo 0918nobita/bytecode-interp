@@ -16,9 +16,9 @@ static int simpleInstruction(const char* name, int offset) {
     return offset + 1;
 }
 
-int disassembleInstruction(Chunk* chunk, int offset, bool formatLineNums) {
+int disassembleInstruction(Chunk* chunk, int offset, bool alwaysDisplayLineNum) {
     printf("%04d ", offset);
-    if (formatLineNums && offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
+    if (!alwaysDisplayLineNum && offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
         printf("   | ");
     } else {
         printf("%4d ", chunk->lines[offset]);
@@ -41,6 +41,6 @@ int disassembleInstruction(Chunk* chunk, int offset, bool formatLineNums) {
 void disassembleChunk(Chunk* chunk, const char* name) {
     printf("== %s ==\n", name);
     for (int offset = 0; offset < chunk->count;) {
-        offset = disassembleInstruction(chunk, offset, true);
+        offset = disassembleInstruction(chunk, offset, false);
     }
 }

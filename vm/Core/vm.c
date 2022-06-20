@@ -6,33 +6,58 @@
 
 VM vm;
 
-void initVM() {}
+static void resetStack() {
+    vm.stackTop = vm.stack;
+}
+
+void initVM() {
+    resetStack();
+}
 
 void freeVM() {}
+
+void push(Value value) {
+    *vm.stackTop = value;
+    vm.stackTop++;
+}
+
+Value pop() {
+    vm.stackTop--;
+    return *vm.stackTop;
+}
+
+static void dumpStack() {
+    bool isFirst = true;
+    printf("[");
+    for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
+        if (!isFirst) printf(", ");
+        printValue(*slot);
+        isFirst = false;
+    }
+    printf("]\n");
+}
 
 static InterpretResult run() {
 #define READ_BYTE() (*vm.instPtr++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
     for (;;) {
 #ifdef _DEBUG
-        disassembleInstruction(vm.chunk, (int)(vm.instPtr - vm.chunk->code), false);
+        dumpStack();
+        disassembleInstruction(vm.chunk, (int)(vm.instPtr - vm.chunk->code), true);
 #endif
 
         uint8_t instruction = READ_BYTE();
 
         switch (instruction) {
             case OP_CONSTANT: {
-#ifdef _DEBUG
                 Value constant = READ_CONSTANT();
-                printValue(constant);
-                printf("\n");
-#else
-                READ_CONSTANT();
-#endif
+                push(constant);
                 break;
             }
 
             case OP_RETURN:
+                printValue(pop());
+                printf("\n");
                 return INTERPRET_OK;
         }
     }
