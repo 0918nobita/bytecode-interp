@@ -8,6 +8,11 @@
 // 各命令は 1 byte のオペコードを持ち、命令の種類を表す
 typedef enum {
     OP_CONSTANT, // 定数をロードする
+    OP_ADD,
+    OP_SUBTRACT,
+    OP_MULTIPLY,
+    OP_DIVIDE,
+    OP_NEGATE,
     OP_RETURN,   // 現在の関数から返る
 } OpCode;
 

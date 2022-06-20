@@ -1,4 +1,5 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
 
 #include "common.h"
 #include "debug.h"
@@ -55,10 +56,46 @@ static InterpretResult run() {
                 break;
             }
 
+            case OP_ADD: {
+                double rhs = pop();
+                double lhs = pop();
+                push(lhs + rhs);
+                break;
+            }
+
+            case OP_SUBTRACT: {
+                double rhs = pop();
+                double lhs = pop();
+                push(lhs - rhs);
+                break;
+            }
+
+            case OP_MULTIPLY: {
+                double rhs = pop();
+                double lhs = pop();
+                push(lhs * rhs);
+                break;
+            }
+
+            case OP_DIVIDE: {
+                double rhs = pop();
+                double lhs = pop();
+                push(lhs / rhs);
+                break;
+            }
+
             case OP_RETURN:
                 printValue(pop());
                 printf("\n");
                 return INTERPRET_OK;
+
+            case OP_NEGATE:
+                push(-pop());
+                break;
+
+            default:
+                fprintf(stderr, "Unknown instruction (opcode = %d)", instruction);
+                exit(1);
         }
     }
 #undef READ_CONSTANT
