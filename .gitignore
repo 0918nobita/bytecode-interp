@@ -3,3 +3,5 @@ bin/
 obj/
 node_modules/
 ast.json
+x64/
+.vs/

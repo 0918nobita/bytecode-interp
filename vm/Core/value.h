@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // VM で扱う値
 typedef double Value;

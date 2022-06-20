@@ -1,9 +1,9 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 
-#include "common.h"
-#include "chunk.h"
-#include "debug.h"
-#include "vm.h"
+#include "../Core/common.h"
+#include "../Core/chunk.h"
+#include "../Core/debug.h"
+#include "../Core/vm.h"
 
 int main(int argc, char* argv[]) {
     (void)argc;
