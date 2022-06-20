@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 
 #include "common.h"
+#include "debug.h"
 #include "vm.h"
 
 VM vm;
@@ -13,13 +14,21 @@ static InterpretResult run() {
 #define READ_BYTE() (*vm.instPtr++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
     for (;;) {
+#ifdef _DEBUG
+        disassembleInstruction(vm.chunk, (int)(vm.instPtr - vm.chunk->code), false);
+#endif
+
         uint8_t instruction = READ_BYTE();
 
         switch (instruction) {
             case OP_CONSTANT: {
+#ifdef _DEBUG
                 Value constant = READ_CONSTANT();
                 printValue(constant);
                 printf("\n");
+#else
+                READ_CONSTANT();
+#endif
                 break;
             }
 
