@@ -14,7 +14,7 @@ charset = utf-8-bom
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{fsproj,ml}]
+[*.{fsproj,ml,vcxproj}]
 indent_size = 2
 
 [Makefile]
