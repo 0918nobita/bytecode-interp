@@ -88,25 +88,16 @@ static void pushBackLineList(LineList* list, Line line) {
 }
 
 static void appendInstruction(LineList* list, int offset, int lineNumber, char* content) {
-    if (list->last == NULL) {
-        Line line;
-        line.lineNumber = lineNumber;
-        line.numInstructions = 1;
-        line.instructions = malloc(sizeof(InstructionInfo));
-        line.instructions[0].offset = offset;
-        line.instructions[0].content = content;
-        pushBackLineList(list, line);
-        return;
-    }
-
-    Line* lastLine = &(*list->last)->line;
-    int prevLineNum = lastLine->lineNumber;
-    if (prevLineNum == lineNumber) {
-        lastLine->instructions = (InstructionInfo*)realloc(lastLine->instructions, sizeof(InstructionInfo) * (lastLine->numInstructions + 1));
-        lastLine->instructions[lastLine->numInstructions].offset = offset;
-        lastLine->instructions[lastLine->numInstructions].content = content;
-        lastLine->numInstructions++;
-        return;
+    if (list->last != NULL) {
+        Line* lastLine = &(*list->last)->line;
+        int prevLineNum = lastLine->lineNumber;
+        if (prevLineNum == lineNumber) {
+            lastLine->instructions = (InstructionInfo*)realloc(lastLine->instructions, sizeof(InstructionInfo) * (lastLine->numInstructions + 1));
+            lastLine->instructions[lastLine->numInstructions].offset = offset;
+            lastLine->instructions[lastLine->numInstructions].content = content;
+            lastLine->numInstructions++;
+            return;
+        }
     }
 
     Line line;
@@ -118,36 +109,44 @@ static void appendInstruction(LineList* list, int offset, int lineNumber, char* 
     pushBackLineList(list, line);
 }
 
+static char* readConstantInstruction(Chunk* chunk, int* offset) {
+    uint8_t constantIndex = chunk->code[*offset + 1];
+    char* msg = "CONSTANT ";
+    int len = strlen(msg);
+    char* inst = malloc(sizeof(char) * (len + 17));
+    strcpy(inst, msg);
+    sprintf(inst + len, "%3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
+    *offset += 2;
+    return inst;
+}
+
+static void readSimpleInstruction(int* offset) {
+    *offset += 1;
+}
+
 static char* readInstruction(Chunk* chunk, int* offset) {
     uint8_t instruction = chunk->code[*offset];
     switch (instruction) {
-        case OP_CONSTANT: {
-            uint8_t constantIndex = chunk->code[*offset + 1];
-            char* msg = "OP_CONSTANT ";
-            char* inst = malloc(sizeof(char) * (strlen(msg) + 17));
-            strcpy(inst, msg);
-            sprintf(inst + strlen(msg), "%3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
-            *offset += 2;
-            return inst;
-        }
+        case OP_CONSTANT:
+            return readConstantInstruction(chunk, offset);
         case OP_ADD:
-            *offset += 1;
-            return "OP_ADD";
+            readSimpleInstruction(offset);
+            return "ADD";
         case OP_SUBTRACT:
-            *offset += 1;
-            return "OP_SUBTRACT";
+            readSimpleInstruction(offset);
+            return "SUBTRACT";
         case OP_MULTIPLY:
-            *offset += 1;
-            return "OP_MULTIPLY";
+            readSimpleInstruction(offset);
+            return "MULTIPLY";
         case OP_DIVIDE:
-            *offset += 1;
-            return "OP_DIVIDE";
+            readSimpleInstruction(offset);
+            return "DIVIDE";
         case OP_NEGATE:
-            *offset += 1;
-            return "OP_NEGATE";
+            readSimpleInstruction(offset);
+            return "NEGATE";
         case OP_RETURN:
-            *offset += 1;
-            return "OP_RETURN";
+            readSimpleInstruction(offset);
+            return "RETURN";
         default:
             fprintf(stderr, "Invalid instruction at %04d\n", *offset);
             exit(1);
