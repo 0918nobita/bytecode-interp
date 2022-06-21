@@ -8,9 +8,14 @@ int disassembleInstruction(Chunk* chunk, int offset, bool alwaysDisplayLineNum);
 void disassembleChunk(Chunk* chunk, const char* name);
 
 typedef struct {
+    int offset;
+    char* content;
+} InstructionInfo;
+
+typedef struct {
     int lineNumber;
     int numInstructions;
-    char** instructions;
+    InstructionInfo* instructions;
 } Line;
 
 struct lineListCell {

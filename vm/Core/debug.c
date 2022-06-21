@@ -87,13 +87,14 @@ static void pushBackLineList(LineList* list, Line line) {
     *list->last = cell;
 }
 
-static void appendInstruction(LineList* list, int lineNumber, char* instruction) {
+static void appendInstruction(LineList* list, int offset, int lineNumber, char* content) {
     if (list->last == NULL) {
         Line line;
         line.lineNumber = lineNumber;
         line.numInstructions = 1;
-        line.instructions = malloc(sizeof(char*));
-        line.instructions[0] = instruction;
+        line.instructions = malloc(sizeof(InstructionInfo));
+        line.instructions[0].offset = offset;
+        line.instructions[0].content = content;
         pushBackLineList(list, line);
         return;
     }
@@ -101,8 +102,9 @@ static void appendInstruction(LineList* list, int lineNumber, char* instruction)
     Line* lastLine = &(*list->last)->line;
     int prevLineNum = lastLine->lineNumber;
     if (prevLineNum == lineNumber) {
-        lastLine->instructions = (char**)realloc(lastLine->instructions, sizeof(char*) * (lastLine->numInstructions + 1));
-        lastLine->instructions[lastLine->numInstructions] = instruction;
+        lastLine->instructions = (InstructionInfo*)realloc(lastLine->instructions, sizeof(InstructionInfo) * (lastLine->numInstructions + 1));
+        lastLine->instructions[lastLine->numInstructions].offset = offset;
+        lastLine->instructions[lastLine->numInstructions].content = content;
         lastLine->numInstructions++;
         return;
     }
@@ -110,7 +112,9 @@ static void appendInstruction(LineList* list, int lineNumber, char* instruction)
     Line line;
     line.lineNumber = lineNumber;
     line.numInstructions = 1;
-    line.instructions = malloc(sizeof(char*));
+    line.instructions = malloc(sizeof(InstructionInfo));
+    line.instructions[0].offset = offset;
+    line.instructions[0].content = content;
     pushBackLineList(list, line);
 }
 
@@ -120,9 +124,9 @@ static char* readInstruction(Chunk* chunk, int* offset) {
         case OP_CONSTANT: {
             uint8_t constantIndex = chunk->code[*offset + 1];
             char* msg = "OP_CONSTANT ";
-            char* inst = malloc(sizeof(char) * (strlen(msg) + 4));
+            char* inst = malloc(sizeof(char) * (strlen(msg) + 17));
             strcpy(inst, msg);
-            sprintf(inst + strlen(msg), "%3d", constantIndex);
+            sprintf(inst + strlen(msg), "%3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
             *offset += 2;
             return inst;
         }
@@ -162,7 +166,8 @@ void dumpChunk(Chunk* chunk, const char* title, const char* outFilePath) {
                     "<head>\n"
                     "<meta charset=\"utf-8\">\n");
     fprintf(file,   "<title>%s</title>\n", title);
-    fprintf(file,   "</head>\n"
+    fprintf(file,   "<style>th, td { padding: 2px 5px; }</style>\n"
+                    "</head>\n"
                     "<body>\n"
                     "<table border=\"1\">\n"
                     "<tr><th>offset</th><th>line</th><th>instruction</th></tr>\n");
@@ -173,20 +178,21 @@ void dumpChunk(Chunk* chunk, const char* title, const char* outFilePath) {
     for (int offset = 0; offset < chunk->count;) {
         int prevOffset = offset;
         char* instruction = readInstruction(chunk, &offset);
-        appendInstruction(&lines, chunk->lines[prevOffset], instruction);
+        appendInstruction(&lines, prevOffset, chunk->lines[prevOffset], instruction);
     }
 
     for (struct lineListCell* cell = *lines.first; cell != NULL; cell = (void*)cell->next) {
         Line* line = &cell->line;
         fprintf(
             file,
-            "<tr><td rowspan=\"%d\" valign=\"top\">%d</td><td>%s</td></tr>\n",
+            "<tr><td align=\"right\">%04d</td><td rowspan=\"%d\" valign=\"top\" align=\"right\">%d</td><td>%s</td></tr>\n",
+            line->instructions[0].offset,
             line->numInstructions,
             line->lineNumber,
-            line->instructions[0]
+            line->instructions[0].content
         );
         for (int i = 1; i < line->numInstructions; i++)
-            fprintf(file, "<tr><td>%s</td></tr>\n", line->instructions[i]);
+            fprintf(file, "<tr><td align=\"right\">%04d</td><td>%s</td></tr>\n", line->instructions[i].offset, line->instructions[i].content);
     }
 
     fprintf(file,   "</table>\n"
