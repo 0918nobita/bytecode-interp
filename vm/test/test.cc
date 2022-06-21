@@ -2,6 +2,7 @@
 
 extern "C" {
 #include "../Core/chunk.h"
+#include "../Core/debug.h"
 }
 
 TEST_GROUP(Chunk) {};
@@ -30,6 +31,25 @@ TEST(Chunk, GrowAndShrink) {
     CHECK_EQUAL(0, chunk.count);
     CHECK_EQUAL(0, chunk.capacity);
     CHECK_EQUAL(NULL, chunk.code);
+}
+
+TEST_GROUP(Debug) {};
+
+TEST(Debug, LineList) {
+    LineList list;
+    list.first = list.last = NULL;
+    Line line;
+    line.lineNumber = 123;
+    line.numInstructions = 2;
+    line.instructions = (InstructionInfo*)malloc(2 * sizeof(InstructionInfo));
+    pushBackLineList(&list, line);
+    CHECK(list.first != NULL);
+    CHECK(list.last != NULL);
+    CHECK(list.first == list.last);
+    CHECK_EQUAL((*list.first)->line.lineNumber, 123);
+
+    appendInstruction(&list, 2, 123, "INSTRUCTION");
+    CHECK_EQUAL((*list.first)->line.numInstructions, 3);
 }
 
 int main(int argc, char* argv[]) {
