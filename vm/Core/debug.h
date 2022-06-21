@@ -28,4 +28,10 @@ typedef struct {
     struct lineListCell** last;
 } LineList;
 
+void pushBackLineList(LineList* list, Line line);
+
+void appendInstruction(LineList* list, int offset, int lineNumber, const char* content);
+
+char* readInstruction(Chunk* chunk, int* offset);
+
 void dumpChunk(Chunk* chunk, const char* title, const char* outFilePath);

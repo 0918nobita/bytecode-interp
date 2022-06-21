@@ -61,7 +61,7 @@ void disassembleChunk(Chunk* chunk, const char* name) {
     }
 }
 
-static void pushBackLineList(LineList* list, Line line) {
+void pushBackLineList(LineList* list, Line line) {
     if (list->first == NULL) {
         if (list->last != NULL) {
             fprintf(stderr, "pushBackLineList: Fatal error\n");
@@ -87,14 +87,15 @@ static void pushBackLineList(LineList* list, Line line) {
     *list->last = cell;
 }
 
-static void appendInstruction(LineList* list, int offset, int lineNumber, char* content) {
+void appendInstruction(LineList* list, int offset, int lineNumber, const char* content) {
     if (list->last != NULL) {
         Line* lastLine = &(*list->last)->line;
         int prevLineNum = lastLine->lineNumber;
         if (prevLineNum == lineNumber) {
             lastLine->instructions = (InstructionInfo*)realloc(lastLine->instructions, sizeof(InstructionInfo) * (lastLine->numInstructions + 1));
             lastLine->instructions[lastLine->numInstructions].offset = offset;
-            lastLine->instructions[lastLine->numInstructions].content = content;
+            lastLine->instructions[lastLine->numInstructions].content = (char*)malloc(sizeof(char) * strlen(content));
+            strcpy(lastLine->instructions[lastLine->numInstructions].content, content);
             lastLine->numInstructions++;
             return;
         }
@@ -105,7 +106,8 @@ static void appendInstruction(LineList* list, int offset, int lineNumber, char* 
     line.numInstructions = 1;
     line.instructions = malloc(sizeof(InstructionInfo));
     line.instructions[0].offset = offset;
-    line.instructions[0].content = content;
+    line.instructions[0].content = (char*)malloc(sizeof(char) * strlen(content));
+    strcpy(line.instructions[0].content, content);
     pushBackLineList(list, line);
 }
 
@@ -124,7 +126,7 @@ static void readSimpleInstruction(int* offset) {
     *offset += 1;
 }
 
-static char* readInstruction(Chunk* chunk, int* offset) {
+char* readInstruction(Chunk* chunk, int* offset) {
     uint8_t instruction = chunk->code[*offset];
     switch (instruction) {
         case OP_CONSTANT:
