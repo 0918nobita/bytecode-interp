@@ -40,8 +40,8 @@ build build/libcorevm.a: create_lib $
 
 build build/Example/main.o: compile Example/main.c
 
-build build/main: link_main build/Example/main.o || build/libcorevm.a
+build build/main: link_main build/Example/main.o | build/libcorevm.a
 
-build build/test: test Test/test.cc || build/libcorevm.a
+build build/test: test Test/test.cc | build/libcorevm.a
 
 default build/libcorevm.a build/main build/test
