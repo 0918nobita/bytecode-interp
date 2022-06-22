@@ -2,7 +2,7 @@
 
 #include "../Core/common.h"
 #include "../Core/chunk.h"
-#include "../Core/debug.h"
+#include "../Core/dumpChunk.h"
 #include "../Core/vm.h"
 
 int main(int argc, char* argv[]) {

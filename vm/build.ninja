@@ -27,15 +27,25 @@ rule test
                 -L./build -lcorevm $
                 $$(pkg-config --libs $test_dependencies)
 
-build build/Core/chunk.o:  compile Core/chunk.c
-build build/Core/debug.o:  compile Core/debug.c
+build build/Core/chunk.o: compile Core/chunk.c
+
+build build/Core/debug.o: compile Core/debug.c
+
+build build/Core/dumpChunk/line.o:     compile Core/dumpChunk/line.c
+build build/Core/dumpChunk/lineList.o: compile Core/dumpChunk/lineList.c
+build build/Core/dumpChunk.o:          compile Core/dumpChunk.c
+
 build build/Core/memory.o: compile Core/memory.c
-build build/Core/value.o:  compile Core/value.c
-build build/Core/vm.o:     compile Core/vm.c
+
+build build/Core/value.o: compile Core/value.c
+build build/Core/vm.o:    compile Core/vm.c
 
 build build/libcorevm.a: create_lib $
     build/Core/chunk.o $
     build/Core/debug.o $
+    build/Core/dumpChunk/line.o $
+    build/Core/dumpChunk/lineList.o $
+    build/Core/dumpChunk.o $
     build/Core/memory.o $
     build/Core/value.o $
     build/Core/vm.o

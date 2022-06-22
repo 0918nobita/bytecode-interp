@@ -2,7 +2,7 @@
 
 extern "C" {
 #include "../Core/chunk.h"
-#include "../Core/debug.h"
+#include "../Core/dumpChunk.h"
 }
 
 TEST_GROUP(Chunk) {};
