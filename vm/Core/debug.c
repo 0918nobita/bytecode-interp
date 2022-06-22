@@ -67,11 +67,19 @@ void pushBackLineList(LineList* list, Line line) {
             fprintf(stderr, "pushBackLineList: Fatal error\n");
             exit(1);
         }
-        struct lineListCell* cell = malloc(sizeof(struct lineListCell));
+        struct lineListCell* cell = (struct lineListCell*)malloc(sizeof(struct lineListCell));
+        if (!cell) {
+            fprintf(stderr, "Failed to allocate memory for list cell (pushBackLineList)");
+            exit(1);
+        }
         cell->line = line;
         cell->next = NULL;
-        struct listListCell** cellPtr = malloc(sizeof(struct listListCell*));
-        *cellPtr = (void*)cell;
+        struct lineListCell** cellPtr = (struct lineListCell**)malloc(sizeof(struct lineListCell*));
+        if (!cellPtr) {
+            fprintf(stderr, "Failed to allocate memory for list cell pointer (pushBackLineList)");
+            exit(1);
+        }
+        *cellPtr = cell;
         (*list).first = (void*)cellPtr;
         (*list).last = (void*)cellPtr;
         return;
@@ -80,7 +88,8 @@ void pushBackLineList(LineList* list, Line line) {
         fprintf(stderr, "pushBackLineList: Fatal error\n");
         exit(1);
     }
-    struct lineListCell* cell = malloc(sizeof(struct lineListCell));
+    struct lineListCell* cell = (struct lineListCell*)malloc(sizeof(struct lineListCell));
+    if (!cell) exit(1);
     cell->line = line;
     cell->next = NULL;
     (*list->last)->next = (void*)cell;
@@ -92,10 +101,21 @@ void appendInstruction(LineList* list, int offset, int lineNumber, const char* c
         Line* lastLine = &(*list->last)->line;
         int prevLineNum = lastLine->lineNumber;
         if (prevLineNum == lineNumber) {
-            lastLine->instructions = (InstructionInfo*)realloc(lastLine->instructions, sizeof(InstructionInfo) * (lastLine->numInstructions + 1));
+            InstructionInfo* instructions = (InstructionInfo*)realloc(lastLine->instructions, sizeof(InstructionInfo) * (lastLine->numInstructions + 1));
+            if (!instructions) {
+                fprintf(stderr, "Failed to reallocate memory for InstructionInfo (appendInstruction)");
+                exit(1);
+            }
+            lastLine->instructions = instructions;
             lastLine->instructions[lastLine->numInstructions].offset = offset;
-            lastLine->instructions[lastLine->numInstructions].content = (char*)malloc(sizeof(char) * strlen(content));
-            strcpy(lastLine->instructions[lastLine->numInstructions].content, content);
+            size_t len = strlen(content) + 1;
+            char* destContent = (char*)malloc(sizeof(char) * len);
+            if (!destContent) {
+                fprintf(stderr, "Failed to allocate memory for copying instruction content (appendInstruction)");
+                exit(1);
+            }
+            lastLine->instructions[lastLine->numInstructions].content = destContent;
+            strncpy(destContent, content, len);
             lastLine->numInstructions++;
             return;
         }
@@ -106,18 +126,21 @@ void appendInstruction(LineList* list, int offset, int lineNumber, const char* c
     line.numInstructions = 1;
     line.instructions = malloc(sizeof(InstructionInfo));
     line.instructions[0].offset = offset;
-    line.instructions[0].content = (char*)malloc(sizeof(char) * strlen(content));
-    strcpy(line.instructions[0].content, content);
+    size_t len = strlen(content) + 1;
+    char* destContent = (char*)malloc(sizeof(char) * len);
+    if (!destContent) {
+        fprintf(stderr, "Failed to allocate memory for copying instruction content (appendInstruction)");
+        exit(1);
+    }
+    line.instructions[0].content = destContent;
+    strncpy(destContent, content, len);
     pushBackLineList(list, line);
 }
 
 static char* readConstantInstruction(Chunk* chunk, int* offset) {
     uint8_t constantIndex = chunk->code[*offset + 1];
-    char* msg = "CONSTANT ";
-    int len = strlen(msg);
-    char* inst = malloc(sizeof(char) * (len + 17));
-    strcpy(inst, msg);
-    sprintf(inst + len, "%3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
+    char inst[26];
+    snprintf(inst, sizeof(inst), "CONSTANT %3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
     *offset += 2;
     return inst;
 }
@@ -158,7 +181,7 @@ char* readInstruction(Chunk* chunk, int* offset) {
 // チャンクの内容を HTML 形式でファイルに出力する
 void dumpChunk(Chunk* chunk, const char* title, const char* outFilePath) {
     FILE* file = fopen(outFilePath, "w");
-    if (file == NULL) {
+    if (!file) {
         fprintf(stderr, "Could not open %s\n", outFilePath);
         exit(1);
     }

@@ -20,7 +20,7 @@ typedef struct {
 
 struct lineListCell {
     Line line;
-    struct listListCell* next;
+    struct lineListCell* next;
 };
 
 typedef struct {
