@@ -139,8 +139,13 @@ void appendInstruction(LineList* list, int offset, int lineNumber, const char* c
 
 static char* readConstantInstruction(Chunk* chunk, int* offset) {
     uint8_t constantIndex = chunk->code[*offset + 1];
-    char inst[26];
-    snprintf(inst, sizeof(inst), "CONSTANT %3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
+    const size_t len = 26;
+    char* inst = (char*)malloc(sizeof(char) * len);
+    if (!inst) {
+        fprintf(stderr, "Failed to allocate memory for copying instruction content (readConstantInstruction)");
+        exit(1);
+    }
+    snprintf(inst, len, "CONSTANT %3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
     *offset += 2;
     return inst;
 }
