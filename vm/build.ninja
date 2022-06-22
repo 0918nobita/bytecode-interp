@@ -1,4 +1,5 @@
 builddir = build
+test_dependencies = cpputest
 
 cflags = -Wall -Wextra -O2 -D_DEBUG
 
@@ -10,7 +11,7 @@ rule compile
 rule link_main
     deps = gcc
     depfile = $out.d
-    command = gcc $cflags -o $out -L./build -lcorevm $in
+    command = gcc $cflags -o $out $in -L./build -lcorevm
 
 rule create_lib
     command = ar rcs $out $in
@@ -20,10 +21,11 @@ rule test
     depfile = $out.d
     command = g++ $cflags $
                 -MMD -MP -MF $out.d $
-                $$(pkg-config --cflags --libs cpputest) $
+                $$(pkg-config --cflags $test_dependencies) $
                 -o $out $
+                $in $
                 -L./build -lcorevm $
-                $in
+                $$(pkg-config --libs $test_dependencies)
 
 build build/Core/chunk.o:  compile Core/chunk.c
 build build/Core/debug.o:  compile Core/debug.c
