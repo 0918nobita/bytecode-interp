@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\dumpChunk">
+      <UniqueIdentifier>{b84ce2e5-f183-400e-aa4f-5cd37621d7ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\dumpChunk">
+      <UniqueIdentifier>{2d4099bb-da8c-40bc-926c-cecf37fb6bda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="chunk.c">
@@ -29,6 +35,15 @@
     </ClCompile>
     <ClCompile Include="vm.c">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="dumpChunk.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="dumpChunk\line.c">
+      <Filter>ソース ファイル\dumpChunk</Filter>
+    </ClCompile>
+    <ClCompile Include="dumpChunk\lineList.c">
+      <Filter>ソース ファイル\dumpChunk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +64,15 @@
     </ClInclude>
     <ClInclude Include="vm.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="dumpChunk.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="dumpChunk\line.h">
+      <Filter>ヘッダー ファイル\dumpChunk</Filter>
+    </ClInclude>
+    <ClInclude Include="dumpChunk\lineList.h">
+      <Filter>ヘッダー ファイル\dumpChunk</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

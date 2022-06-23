@@ -1,4 +1,4 @@
-#include <assert.h>
+﻿#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,7 +29,10 @@ void deepCopyLine(Line* dest, const Line* src) {
 
 void clearLine(Line* line) {
     if (!line || !line->insts) return;
-    for (int i = 0; i < line->numInsts; i++)
-        free(line->insts[i].content);
+    for (int i = 0; i < line->numInsts; i++) {
+        char* content = line->insts[i].content;
+        if (!content) continue;
+        free(content);
+    }
     free(line->insts);
 }
