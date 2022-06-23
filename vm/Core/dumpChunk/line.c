@@ -12,11 +12,6 @@ void deepCopyInstInfo(InstInfo* dest, const InstInfo* src) {
     dest->content = strdup(src->content);
 }
 
-void clearInstInfo(InstInfo* instInfo) {
-    if (!instInfo || !instInfo->content) return;
-    free(instInfo->content);
-}
-
 void deepCopyLine(Line* dest, const Line* src) {
     assert(src != NULL);
     assert(dest != NULL);
@@ -35,6 +30,6 @@ void deepCopyLine(Line* dest, const Line* src) {
 void clearLine(Line* line) {
     if (!line || !line->insts) return;
     for (int i = 0; i < line->numInsts; i++)
-        clearInstInfo(&line->insts[i]);
+        free(line->insts[i].content);
     free(line->insts);
 }

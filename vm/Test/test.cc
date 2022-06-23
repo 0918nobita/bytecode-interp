@@ -44,16 +44,19 @@ TEST(Debug, LineList) {
     line.insts = (InstInfo*)malloc(2 * sizeof(InstInfo));
 
     line.insts[0].offset = 0;
-    char inst1[11] = "CONSTANT 0";
-    line.insts[0].content = inst1;
+    char* inst0 = (char*)malloc(sizeof(char) * 11);
+    strncpy(inst0, "CONSTANT 0", 11);
+    line.insts[0].content = inst0;
 
     line.insts[1].offset = 4;
-    char inst2[11] = "CONSTANT 1";
-    line.insts[1].content = inst2;
+    char* inst1 = (char*)malloc(sizeof(char) * 11);
+    strncpy(inst1, "CONSTANT 1", 11);
+    line.insts[1].content = inst1;
 
     LineList list;
     list.first = list.last = NULL;
     pushBackLineList(&list, &line);
+    clearLine(&line);
     CHECK(list.first != NULL);
     CHECK(list.last != NULL);
     CHECK_EQUAL(*list.first, *list.last);
@@ -69,6 +72,7 @@ TEST(Debug, LineList) {
     CHECK_EQUAL((*list.last)->line.lineNumber, 124);
     CHECK_EQUAL((*list.last)->line.numInsts, 1);
     CHECK(strcmp((*list.last)->line.insts[0].content, "RETURN") == 0);
+    clearLineList(&list);
 }
 
 int main(int argc, char* argv[]) {

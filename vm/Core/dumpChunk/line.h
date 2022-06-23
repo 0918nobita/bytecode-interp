@@ -7,8 +7,6 @@ typedef struct {
 
 void deepCopyInstInfo(InstInfo* dest, const InstInfo* src);
 
-void clearInstInfo(InstInfo* instInfo);
-
 typedef struct {
     int lineNumber;
     int numInsts;

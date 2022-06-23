@@ -50,7 +50,6 @@ void pushBackLineList(LineList* list, const Line* line) {
     if (!cell) exit(1);
     deepCopyLine(&cell->line, line);
     cell->next = NULL;
-    // if (list->first == list->last) (*list->first)->next = cell;
     (*list->last)->next = cell;
     *list->last = cell;
 }
