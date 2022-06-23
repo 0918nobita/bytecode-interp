@@ -54,6 +54,8 @@ build build/Example/main.o: compile Example/main.c
 
 build build/main: link_main build/Example/main.o | build/libcorevm.a
 
-build build/test: test Test/test.cc | build/libcorevm.a
+build build/TestLib/chunk.o:    compile Test/chunk.cc
+build build/TestLib/lineList.o: compile Test/lineList.cc
+build build/test: test Test/test.cc build/TestLib/chunk.o build/TestLib/lineList.o | build/libcorevm.a
 
 default build/libcorevm.a build/main build/test
