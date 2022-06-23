@@ -7,7 +7,7 @@
 static void readConstantInstruction(Chunk* chunk, int* offset, char** inst) {
     uint8_t constantIndex = chunk->code[*offset + 1];
     const size_t len = 26;
-    *inst = (char*)malloc(sizeof(char) * len);
+    *inst = malloc(sizeof(char) * len);
     if (!*inst) {
         fprintf(stderr, "Failed to allocate memory for copying instruction content (readConstantInstruction)");
         exit(1);
@@ -18,7 +18,7 @@ static void readConstantInstruction(Chunk* chunk, int* offset, char** inst) {
 
 static void readSimpleInstruction(char** inst, int* offset, const char* content) {
     size_t len = strlen(content) + 1;
-    *inst = (char*)malloc(sizeof(char) * len);
+    *inst = malloc(sizeof(char) * len);
     strncpy(*inst, content, len);
     *offset += 1;
 }
@@ -87,13 +87,13 @@ void dumpChunk(Chunk* chunk, const char* title, const char* outFilePath) {
         fprintf(
             file,
             "<tr><td align=\"right\">%04d</td><td rowspan=\"%d\" valign=\"top\" align=\"right\">%d</td><td>%s</td></tr>\n",
-            line->instructions[0].offset,
-            line->numInstructions,
+            line->insts[0].offset,
+            line->numInsts,
             line->lineNumber,
-            line->instructions[0].content
+            line->insts[0].content
         );
-        for (int i = 1; i < line->numInstructions; i++)
-            fprintf(file, "<tr><td align=\"right\">%04d</td><td>%s</td></tr>\n", line->instructions[i].offset, line->instructions[i].content);
+        for (int i = 1; i < line->numInsts; i++)
+            fprintf(file, "<tr><td align=\"right\">%04d</td><td>%s</td></tr>\n", line->insts[i].offset, line->insts[i].content);
     }
 
     clearLineList(&lines);

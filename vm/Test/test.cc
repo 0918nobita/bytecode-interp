@@ -1,3 +1,4 @@
+#include <cstring>
 #include <CppUTest/CommandLineTestRunner.h>
 
 extern "C" {
@@ -36,20 +37,38 @@ TEST(Chunk, GrowAndShrink) {
 TEST_GROUP(Debug) {};
 
 TEST(Debug, LineList) {
-    LineList list;
-    list.first = list.last = NULL;
     Line line;
     line.lineNumber = 123;
-    line.numInstructions = 2;
-    line.instructions = (InstructionInfo*)malloc(2 * sizeof(InstructionInfo));
-    pushBackLineList(&list, line);
+    line.numInsts = 2;
+
+    line.insts = (InstInfo*)malloc(2 * sizeof(InstInfo));
+
+    line.insts[0].offset = 0;
+    char inst1[11] = "CONSTANT 0";
+    line.insts[0].content = inst1;
+
+    line.insts[1].offset = 4;
+    char inst2[11] = "CONSTANT 1";
+    line.insts[1].content = inst2;
+
+    LineList list;
+    list.first = list.last = NULL;
+    pushBackLineList(&list, &line);
     CHECK(list.first != NULL);
     CHECK(list.last != NULL);
-    CHECK(list.first == list.last);
+    CHECK_EQUAL(*list.first, *list.last);
     CHECK_EQUAL((*list.first)->line.lineNumber, 123);
 
-    appendInstruction(&list, 2, 123, "INSTRUCTION");
-    CHECK_EQUAL((*list.first)->line.numInstructions, 3);
+    appendInstruction(&list, 8, 123, "ADD");
+    CHECK_EQUAL(*list.first, *list.last);
+    CHECK_EQUAL((*list.first)->line.numInsts, 3);
+    CHECK(strcmp((*list.first)->line.insts[2].content, "ADD") == 0);
+
+    appendInstruction(&list, 10, 124, "RETURN");
+    CHECK_EQUAL((*list.first)->next, *list.last);
+    CHECK_EQUAL((*list.last)->line.lineNumber, 124);
+    CHECK_EQUAL((*list.last)->line.numInsts, 1);
+    CHECK(strcmp((*list.last)->line.insts[0].content, "RETURN") == 0);
 }
 
 int main(int argc, char* argv[]) {

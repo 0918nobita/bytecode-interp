@@ -3,14 +3,18 @@
 typedef struct {
     int offset;
     char* content;
-} InstructionInfo;
+} InstInfo;
 
-void clearInstructionInfo(InstructionInfo* instructionInfo);
+void deepCopyInstInfo(InstInfo* dest, const InstInfo* src);
+
+void clearInstInfo(InstInfo* instInfo);
 
 typedef struct {
     int lineNumber;
-    int numInstructions;
-    InstructionInfo* instructions;
+    int numInsts;
+    InstInfo* insts;
 } Line;
+
+void deepCopyLine(Line* dest, const Line* src);
 
 void clearLine(Line* line);

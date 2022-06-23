@@ -1,15 +1,40 @@
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "line.h"
 
-void clearInstructionInfo(InstructionInfo* instructionInfo) {
-    if (!instructionInfo || !instructionInfo->content) return;
-    free(instructionInfo->content);
+void deepCopyInstInfo(InstInfo* dest, const InstInfo* src) {
+    assert(src != NULL);
+    assert(dest != NULL);
+    dest->offset = src->offset;
+    dest->content = strdup(src->content);
+}
+
+void clearInstInfo(InstInfo* instInfo) {
+    if (!instInfo || !instInfo->content) return;
+    free(instInfo->content);
+}
+
+void deepCopyLine(Line* dest, const Line* src) {
+    assert(src != NULL);
+    assert(dest != NULL);
+    dest->lineNumber = src->lineNumber;
+    dest->numInsts = src->numInsts;
+    if (src->numInsts == 0) {
+        dest->insts = NULL;
+        return;
+    }
+    dest->insts = malloc(sizeof(InstInfo) * src->numInsts);
+    for (int i = 0; i < src->numInsts; i++) {
+        deepCopyInstInfo(dest->insts + i, src->insts + i);
+    }
 }
 
 void clearLine(Line* line) {
-    if (!line || !line->instructions) return;
-    for (int i = 0; i < line->numInstructions; i++)
-        clearInstructionInfo(&line->instructions[i]);
-    free(line->instructions);
+    if (!line || !line->insts) return;
+    for (int i = 0; i < line->numInsts; i++)
+        clearInstInfo(&line->insts[i]);
+    free(line->insts);
 }

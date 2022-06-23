@@ -14,6 +14,6 @@ typedef struct {
 
 void clearLineList(LineList* lineList);
 
-void pushBackLineList(LineList* list, Line line);
+void pushBackLineList(LineList* list, const Line* line);
 
 void appendInstruction(LineList* list, int offset, int lineNumber, const char* content);
