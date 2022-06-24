@@ -11,7 +11,7 @@ TEST(Chunk, GrowAndShrink) {
     initChunk(&chunk);
     CHECK_EQUAL(0, chunk.count);
     CHECK_EQUAL(0, chunk.capacity);
-    CHECK_EQUAL(NULL, chunk.code);
+    CHECK(chunk.code == NULL);
 
     writeChunk(&chunk, 12, 1);
     CHECK_EQUAL(1, chunk.count);
@@ -29,5 +29,5 @@ TEST(Chunk, GrowAndShrink) {
     freeChunk(&chunk);
     CHECK_EQUAL(0, chunk.count);
     CHECK_EQUAL(0, chunk.capacity);
-    CHECK_EQUAL(NULL, chunk.code);
+    CHECK(chunk.code == NULL);
 }
