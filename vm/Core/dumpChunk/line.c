@@ -28,10 +28,10 @@ void deepCopyLine(Line* dest, const Line* src) {
 }
 
 void clearLine(Line* line) {
-    if (!line || !line->insts) return;
+    if (!line) return;
+    assert(line->insts != NULL || line->numInsts == 0);
     for (int i = 0; i < line->numInsts; i++) {
         char* content = line->insts[i].content;
-        if (!content) continue;
         free(content);
     }
     free(line->insts);
