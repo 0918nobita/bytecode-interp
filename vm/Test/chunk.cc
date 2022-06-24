@@ -16,7 +16,7 @@ TEST(Chunk, GrowAndShrink) {
     writeChunk(&chunk, 12, 1);
     CHECK_EQUAL(1, chunk.count);
     CHECK_EQUAL(8, chunk.capacity);
-    CHECK_EQUAL(12, chunk.code[0]);
+    CHECK(chunk.code && chunk.code[0] == 12);
 
     for (int i = 1; i <= 7; i++) writeChunk(&chunk, 24, i + 1);
     CHECK_EQUAL(8, chunk.count);

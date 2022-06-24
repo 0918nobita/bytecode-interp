@@ -1,7 +1,8 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "../error.h"
 #include "lineList.h"
 
 void clearLineList(LineList* lineList) {
@@ -15,40 +16,34 @@ void clearLineList(LineList* lineList) {
 
 void pushBackLineList(LineList* list, const Line* line) {
     if (list->first == NULL) {
-        if (list->last != NULL) {
-            fprintf(stderr, "pushBackLineList: Fatal error\n");
-            exit(1);
-        }
+        if (list->last != NULL) EXIT1_MSG("pushBackLineList: Invalid value of type LineList\n");
+
         struct lineListCell* cell = malloc(sizeof(struct lineListCell));
-        if (!cell) {
-            fprintf(stderr, "Failed to allocate memory for list cell (pushBackLineList)");
-            exit(1);
-        }
+        ASSERT_OR_EXIT1(cell, "pushBackLineList: Failed to allocate memory for list cell\n");
+
         deepCopyLine(&cell->line, line);
         cell->next = NULL;
+
         struct lineListCell** firstCellPtr = malloc(sizeof(struct lineListCell*));
-        if (!firstCellPtr) {
-            fprintf(stderr, "Failed to allocate memory for list cell pointer (pushBackLineList)");
-            exit(1);
-        }
+        ASSERT_OR_EXIT1(firstCellPtr, "pushBackLineList: Failed to allocate memory for list cell pointer\n");
         *firstCellPtr = cell;
+
         struct lineListCell** lastCellPtr = malloc(sizeof(struct lineListCell*));
-        if (!lastCellPtr) {
-            fprintf(stderr, "Failed to allocate memory for list cell pointer (pushBackLineList)");
-            exit(1);
-        }
+        ASSERT_OR_EXIT1(lastCellPtr, "pushBackLineList: Failed to allocate memory for list cell pointer\n");
         *lastCellPtr = cell;
+
         (*list).first = firstCellPtr;
         (*list).last = lastCellPtr;
         return;
     }
-    if (list->last == NULL) {
-        fprintf(stderr, "pushBackLineList: Fatal error\n");
-        exit(1);
-    }
+
+    if (list->last == NULL) EXIT1_MSG("pushBackLineList: Invalid value of type LineList\n");
+
     struct lineListCell* cell = malloc(sizeof(struct lineListCell));
-    if (!cell) exit(1);
+    ASSERT_OR_EXIT1(cell, "pushBackLineList: Failed to allocate memory for list cell\n");
+
     deepCopyLine(&cell->line, line);
+
     cell->next = NULL;
     (*list->last)->next = cell;
     *list->last = cell;
@@ -60,20 +55,11 @@ void appendInstruction(LineList* list, int offset, int lineNumber, const char* c
         int prevLineNum = lastLine->lineNumber;
         if (prevLineNum == lineNumber) {
             InstInfo* insts = realloc(lastLine->insts, sizeof(InstInfo) * (lastLine->numInsts + 1));
-            if (!insts) {
-                fprintf(stderr, "Failed to reallocate memory for InstructionInfo (appendInstruction)");
-                exit(1);
-            }
+            ASSERT_OR_EXIT1(insts, "appendInstruction: Failed to reallocate memory for InstInfo array\n");
+
             lastLine->insts = insts;
             lastLine->insts[lastLine->numInsts].offset = offset;
-            size_t len = strlen(content) + 1;
-            char* destContent = malloc(sizeof(char) * len);
-            if (!destContent) {
-                fprintf(stderr, "Failed to allocate memory for copying instruction content (appendInstruction)");
-                exit(1);
-            }
-            lastLine->insts[lastLine->numInsts].content = destContent;
-            strncpy(destContent, content, len);
+            lastLine->insts[lastLine->numInsts].content = strdup(content);
             lastLine->numInsts++;
             return;
         }
@@ -82,15 +68,12 @@ void appendInstruction(LineList* list, int offset, int lineNumber, const char* c
     Line line;
     line.lineNumber = lineNumber;
     line.numInsts = 1;
-    line.insts = malloc(sizeof(InstInfo));
+
+    InstInfo* insts = malloc(sizeof(InstInfo));
+    ASSERT_OR_EXIT1(insts, "appendInstruction: Failed to allocate memory for InstInfo array\n")
+    line.insts = insts;
+
     line.insts[0].offset = offset;
-    size_t len = strlen(content) + 1;
-    char* destContent = malloc(sizeof(char) * len);
-    if (!destContent) {
-        fprintf(stderr, "Failed to allocate memory for copying instruction content (appendInstruction)");
-        exit(1);
-    }
-    line.insts[0].content = destContent;
-    strncpy(destContent, content, len);
+    line.insts[0].content = strdup(content);
     pushBackLineList(list, &line);
 }

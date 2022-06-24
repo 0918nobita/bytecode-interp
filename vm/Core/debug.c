@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 
+#include "error.h"
 #include "debug.h"
 
 static int constantInstruction(const char* name, Chunk* chunk, int offset) {
@@ -48,8 +49,7 @@ int disassembleInstruction(Chunk* chunk, int offset, bool alwaysDisplayLineNum) 
             return simpleInstruction("OP_RETURN", offset);
 
         default:
-            fprintf(stderr, "Invalid instruction at %04d\n", offset);
-            exit(1);
+            EXIT1_MSG("disassembleInstruction: Invalid instruction at %04d\n", offset);
     }
 }
 

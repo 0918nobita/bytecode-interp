@@ -31,6 +31,7 @@ build build/Core/chunk.o: compile Core/chunk.c
 
 build build/Core/debug.o: compile Core/debug.c
 
+build build/Core/dumpChunk/inst.o:     compile Core/dumpChunk/inst.c
 build build/Core/dumpChunk/line.o:     compile Core/dumpChunk/line.c
 build build/Core/dumpChunk/lineList.o: compile Core/dumpChunk/lineList.c
 build build/Core/dumpChunk.o:          compile Core/dumpChunk.c
@@ -43,6 +44,7 @@ build build/Core/vm.o:    compile Core/vm.c
 build build/libcorevm.a: create_lib $
     build/Core/chunk.o $
     build/Core/debug.o $
+    build/Core/dumpChunk/inst.o $
     build/Core/dumpChunk/line.o $
     build/Core/dumpChunk/lineList.o $
     build/Core/dumpChunk.o $

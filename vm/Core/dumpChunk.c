@@ -3,23 +3,20 @@
 #include <string.h>
 
 #include "dumpChunk.h"
+#include "error.h"
 
 static void readConstantInstruction(Chunk* chunk, int* offset, char** inst) {
     uint8_t constantIndex = chunk->code[*offset + 1];
     const size_t len = 26;
     *inst = malloc(sizeof(char) * len);
-    if (!*inst) {
-        fprintf(stderr, "Failed to allocate memory for copying instruction content (readConstantInstruction)");
-        exit(1);
-    }
+    if (!*inst)
+        EXIT1_MSG("readConstantInstruction: Failed to allocate memory for copying instruction content");
     snprintf(*inst, len, "CONSTANT %3d (%6.3lf)", constantIndex, chunk->constants.values[constantIndex]);
     *offset += 2;
 }
 
 static void readSimpleInstruction(char** inst, int* offset, const char* content) {
-    size_t len = strlen(content) + 1;
-    *inst = malloc(sizeof(char) * len);
-    strncpy(*inst, content, len);
+    *inst = strdup(content);
     *offset += 1;
 }
 
@@ -48,18 +45,15 @@ void readInstruction(Chunk* chunk, int* offset, char** inst) {
             readSimpleInstruction(inst, offset, "RETURN");
             break;
         default:
-            fprintf(stderr, "Invalid instruction at %04d\n", *offset);
-            exit(1);
+            EXIT1_MSG("Invalid instruction at %04d\n", *offset);
     }
 }
 
 // チャンクの内容を HTML 形式でファイルに出力する
 void dumpChunk(Chunk* chunk, const char* title, const char* outFilePath) {
     FILE* file = fopen(outFilePath, "w");
-    if (!file) {
-        fprintf(stderr, "Could not open %s\n", outFilePath);
-        exit(1);
-    }
+    if (!file) EXIT1_MSG("Could not open %s\n", outFilePath);
+
     fprintf(file,   "<!DOCTYPE html>\n"
                     "<html>\n"
                     "<head>\n"

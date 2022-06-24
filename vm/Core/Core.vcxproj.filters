@@ -45,6 +45,9 @@
     <ClCompile Include="dumpChunk\lineList.c">
       <Filter>ソース ファイル\dumpChunk</Filter>
     </ClCompile>
+    <ClCompile Include="dumpChunk\inst.c">
+      <Filter>ソース ファイル\dumpChunk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chunk.h">
@@ -72,6 +75,12 @@
       <Filter>ヘッダー ファイル\dumpChunk</Filter>
     </ClInclude>
     <ClInclude Include="dumpChunk\lineList.h">
+      <Filter>ヘッダー ファイル\dumpChunk</Filter>
+    </ClInclude>
+    <ClInclude Include="error.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="dumpChunk\inst.h">
       <Filter>ヘッダー ファイル\dumpChunk</Filter>
     </ClInclude>
   </ItemGroup>

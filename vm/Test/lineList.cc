@@ -15,14 +15,10 @@ TEST(Debug, LineList) {
     line.insts = (InstInfo*)malloc(2 * sizeof(InstInfo));
 
     line.insts[0].offset = 0;
-    char* inst0 = (char*)malloc(sizeof(char) * 11);
-    strncpy(inst0, "CONSTANT 0", 11);
-    line.insts[0].content = inst0;
+    line.insts[0].content = strdup("CONSTANT 0");
 
     line.insts[1].offset = 4;
-    char* inst1 = (char*)malloc(sizeof(char) * 11);
-    strncpy(inst1, "CONSTANT 1", 11);
-    line.insts[1].content = inst1;
+    line.insts[1].content = strdup("CONSTANT 1");
 
     LineList list;
     list.first = list.last = NULL;

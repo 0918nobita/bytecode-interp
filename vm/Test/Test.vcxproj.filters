@@ -18,5 +18,11 @@
     <ClCompile Include="test.cc">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="chunk.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lineList.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

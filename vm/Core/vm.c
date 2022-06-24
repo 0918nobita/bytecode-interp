@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "common.h"
+#include "error.h"
 #include "debug.h"
 #include "vm.h"
 
@@ -94,8 +95,7 @@ static InterpretResult run() {
                 break;
 
             default:
-                fprintf(stderr, "Unknown instruction (opcode = %d)", instruction);
-                exit(1);
+                EXIT1_MSG("run: Unknown instruction (opcode = %d)", instruction);
         }
     }
 #undef READ_CONSTANT
