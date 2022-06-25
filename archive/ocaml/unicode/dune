@@ -1,9 +1,0 @@
-(library
-  (name unicode)
-  (public_name psyche.unicode)
-  (libraries uutf))
-
-(coq.extraction
-  (prelude Extraction)
-  (extracted_modules extr)
-  (theories Psyche))

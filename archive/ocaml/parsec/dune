@@ -1,5 +1,0 @@
-(library
-  (name parsec)
-  (public_name psyche.parsec)
-  (libraries psyche.unicode)
-  (instrumentation (backend bisect_ppx)))

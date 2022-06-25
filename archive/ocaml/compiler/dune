@@ -1,3 +1,0 @@
-(executable
-  (name compiler)
-  (public_name psyche))

@@ -1,8 +1,0 @@
-rule assemble
-  command = as -o $out $in
-
-rule link
-  command = ld -o $out $in
-
-build build/noop.o: assemble noop.s
-build build/noop: link build/noop.o
