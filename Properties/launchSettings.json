@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "psyche": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
