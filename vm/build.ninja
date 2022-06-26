@@ -19,7 +19,7 @@ rule create_lib
 rule test
     deps = gcc
     depfile = $out.d
-    command = g++ $cflags $
+    command = g++ -std=c++20 $cflags $
                 -MMD -MP -MF $out.d $
                 $$(pkg-config --cflags $test_dependencies) $
                 -o $out $
