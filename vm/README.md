@@ -1,24 +1,34 @@
 # Virtual Machine
 
+[![Test](https://github.com/0918nobita/psyche/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/0918nobita/psyche/actions/workflows/test.yml)
+
 Crafting Interpreters を参考に、C言語で VM の実装を進めています。
 
 ## 依存ライブラリ
 
-- CppUTest
+- Google Test
 
-## ビルド
+## Windows での開発
+
+Visual Studio 2022 で開発できるようにソリューション `psyche.sln` をプロジェクトルートに用意しています。
+
+## macOS / Linux での開発
+
+ターミナルから Ninja を利用してビルドしてください。
+
+### ビルド
 
 ```bash
 ninja
 ```
 
-## メインプログラムの実行
+### メインプログラムの実行
 
 ```bash
 ./build/main
 ```
 
-## テストの実行
+### テストの実行
 
 ```bash
 ./build/test
