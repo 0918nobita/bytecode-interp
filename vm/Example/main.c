@@ -1,45 +1,58 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../Core/common.h"
 #include "../Core/chunk.h"
 #include "../Core/dumpChunk.h"
+#include "../Core/error.h"
 #include "../Core/vm.h"
 
+static void repl() {
+    char line[1024];
+    for (;;) {
+        printf("> ");
+        if (!fgets(line, sizeof(line), stdin) || strcmp(line, ":exit\n") == 0) {
+            printf("\n");
+            break;
+        }
+        interpret(line);
+    }
+}
+
+static char* readFile(const char* path) {
+    FILE* file = fopen(path, "rb");
+    ASSERT_OR_EXIT1(file, "readFile: Failed to open file \"%s\".\n", path);
+    // ファイル末尾までシークして ftell でファイルサイズを得る
+    fseek(file, 0L, SEEK_END);
+    size_t fileSize = ftell(file);
+    // ファイルポインタの位置を先頭に戻す
+    rewind(file);
+    char* buffer = malloc(fileSize + 1);
+    ASSERT_OR_EXIT1(buffer, "readFile: Not enough memory to read \"%s\".\n", path);
+    size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
+    ASSERT_OR_EXIT1(bytesRead == fileSize, "readFile: Could not read file \"%s\".\n", path);
+    buffer[bytesRead] = '\0';
+    fclose(file);
+    return buffer;
+}
+
+static void runFile(const char* path) {
+    char* source = readFile(path);
+    InterpretResult result = interpret(source);
+    free(source);
+    if (result == INTERPRET_COMPILE_ERROR) exit(65);
+    if (result == INTERPRET_RUNTIME_ERROR) exit(70);
+}
+
 int main(int argc, char* argv[]) {
-    (void)argc;
-    (void)argv;
-
     initVM();
-
-    Chunk chunk;
-    initChunk(&chunk);
-
-    int constantIndex = addConstant(&chunk, 1.2);
-    writeChunk(&chunk, OP_CONSTANT, 123);
-    writeChunk(&chunk, constantIndex, 123);
-
-    constantIndex = addConstant(&chunk, 3.4);
-    writeChunk(&chunk, OP_CONSTANT, 123);
-    writeChunk(&chunk, constantIndex, 123);
-
-    writeChunk(&chunk, OP_ADD, 123);
-
-    constantIndex = addConstant(&chunk, 5.6);
-    writeChunk(&chunk, OP_CONSTANT, 123);
-    writeChunk(&chunk, constantIndex, 123);
-
-    writeChunk(&chunk, OP_DIVIDE, 123);
-
-    writeChunk(&chunk, OP_NEGATE, 123);
-
-    writeChunk(&chunk, OP_RETURN, 123);
-
-    dumpChunk(&chunk, "test chunk", "chunkInfo.html");
-
-    interpret(&chunk);
-
+    if (argc == 1) {
+        repl();
+    } else if (argc == 2) {
+        runFile(argv[1]);
+    } else {
+        EXIT1_MSG("Usage: clox [path]\n");
+    }
     freeVM();
-    freeChunk(&chunk);
-
-    return 0;
 }
