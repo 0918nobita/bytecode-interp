@@ -38,3 +38,24 @@ jobs:
       - name: Run tests
         run: ./build/test
         working-directory: vm
+
+  macos:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+      - uses: seanmiddleditch/gha-setup-ninja@v3
+      - name: Install googletest
+        run: |
+          git clone https://github.com/google/googletest.git
+          cd googletest
+          mkdir build
+          cd build
+          cmake ..
+          make
+          sudo make install
+      - name: Build tests
+        run: ninja
+        working-directory: vm
+      - name: Run tests
+        run: ./build/test
+        working-directory: vm
