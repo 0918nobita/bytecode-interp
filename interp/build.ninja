@@ -1,0 +1,76 @@
+builddir = build
+test_dependencies = gtest_main
+
+cflags = -Wall -Wextra -O2 -D_DEBUG
+
+coverage_flags = $$([ "$$PSY_COVERAGE" = "true" ] && echo "-fprofile-arcs -ftest-coverage")
+
+rule compile_c
+    deps = gcc
+    depfile = $out.d
+    command = gcc $cflags -MMD -MP -MF $out.d -c -o $out $coverage_flags $in
+
+rule compile_cpp
+    deps = gcc
+    depfile = $out.d
+    command = g++ -std=c++20 $cflags -MMD -MP -MF $out.d -c -o $out $coverage_flags $in
+
+rule link_main
+    deps = gcc
+    depfile = $out.d
+    command = gcc $cflags -o $out $coverage_flags $in -L./build -lvm -lcompiler
+
+rule create_lib
+    command = ar rcs $out $in
+
+rule compile_test
+    deps = gcc
+    depfile = $out.d
+    command = g++ -std=c++20 $cflags $
+                -MMD -MP -MF $out.d $
+                $coverage_flags $
+                $$(pkg-config --cflags $test_dependencies) $
+                -o $out $
+                $in $
+                -L./build -lvm -lcompiler $
+                $$(pkg-config --libs $test_dependencies)
+
+build build/VM/chunk.o: compile_c VM/chunk.c
+
+build build/VM/debug.o: compile_c VM/debug.c
+
+build build/VM/dumpChunk/inst.o:     compile_c VM/dumpChunk/inst.c
+build build/VM/dumpChunk/line.o:     compile_c VM/dumpChunk/line.c
+build build/VM/dumpChunk/lineList.o: compile_c VM/dumpChunk/lineList.c
+build build/VM/dumpChunk.o:          compile_c VM/dumpChunk.c
+
+build build/VM/memory.o: compile_c VM/memory.c
+
+build build/VM/value.o: compile_c VM/value.c
+build build/VM/vm.o:    compile_c VM/vm.c
+
+build build/libvm.a: create_lib $
+    build/VM/chunk.o $
+    build/VM/debug.o $
+    build/VM/dumpChunk/inst.o $
+    build/VM/dumpChunk/line.o $
+    build/VM/dumpChunk/lineList.o $
+    build/VM/dumpChunk.o $
+    build/VM/memory.o $
+    build/VM/value.o $
+    build/VM/vm.o
+
+build build/Compiler/compiler.o: compile_cpp Compiler/compiler.cpp
+build build/Compiler/scanner.o:  compile_cpp Compiler/scanner.cpp
+
+build build/libcompiler.a: create_lib $
+    build/Compiler/compiler.o $
+    build/Compiler/scanner.o
+
+build build/Interp/main.o: compile_c Interp/main.c
+
+build build/main: link_main build/Interp/main.o | build/libvm.a build/libcompiler.a
+
+build build/test: compile_test UnitTest/test.cpp | build/libvm.a build/libcompiler.a
+
+default build/main build/test

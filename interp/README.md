@@ -1,8 +1,8 @@
-# Virtual Machine
+# Bytecode Interpreter
 
 [![Test](https://github.com/0918nobita/psyche/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/0918nobita/psyche/actions/workflows/test.yml)
 
-Crafting Interpreters を参考に、C言語で VM の実装を進めています。
+Crafting Interpreters を参考に、C言語でコンパイラ・VMの実装を進めています。
 
 ## 依存ライブラリ
 

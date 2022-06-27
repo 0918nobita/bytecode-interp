@@ -1,8 +1,8 @@
 #include "pch.h"
 
 extern "C" {
-#include "../Core/chunk.h"
-#include "../Core/dumpChunk.h"
+#include "../VM/chunk.h"
+#include "../VM/dumpChunk.h"
 }
 
 TEST(Chunk, GrowAndShrink) {

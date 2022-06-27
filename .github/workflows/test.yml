@@ -34,10 +34,10 @@ jobs:
           sudo make install
       - name: Build tests
         run: ninja
-        working-directory: vm
+        working-directory: interp
       - name: Run tests
         run: ./build/test
-        working-directory: vm
+        working-directory: interp
 
   macos:
     runs-on: macos-12
@@ -55,7 +55,7 @@ jobs:
           sudo make install
       - name: Build tests
         run: ninja
-        working-directory: vm
+        working-directory: interp
       - name: Run tests
         run: ./build/test
-        working-directory: vm
+        working-directory: interp

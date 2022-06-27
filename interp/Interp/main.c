@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../Core/common.h"
-#include "../Core/chunk.h"
-#include "../Core/dumpChunk.h"
-#include "../Core/error.h"
-#include "../Core/vm.h"
+#include "../VM/common.h"
+#include "../VM/chunk.h"
+#include "../VM/dumpChunk.h"
+#include "../VM/error.h"
+#include "../VM/vm.h"
 
 static void repl() {
     char line[1024];

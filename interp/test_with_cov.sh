@@ -1,7 +1,7 @@
 #!/bin/sh -ev
 
 rm -rf coverage
-ninja -t clean build/libcorevm.a build/test
+ninja -t clean build/libvm.a build/test
 PSY_COVERAGE=true ninja build/test
 ./build/test
 lcov -c -d . --no-external -o lcov.info
