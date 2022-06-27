@@ -3,29 +3,41 @@ test_dependencies = gtest_main
 
 cflags = -Wall -Wextra -O2 -D_DEBUG
 
+coverage_flags = $$([ "$$PSY_COVERAGE" = "true" ] && echo "-fprofile-arcs -ftest-coverage")
+
 rule compile
     deps = gcc
     depfile = $out.d
-    command = gcc $cflags -MMD -MP -MF $out.d -c -o $out $in
+    command = gcc $cflags -MMD -MP -MF $out.d -c -o $out $coverage_flags $in
 
 rule link_main
     deps = gcc
     depfile = $out.d
-    command = gcc $cflags -o $out $in -L./build -lcorevm
+    command = gcc $cflags -o $out $coverage_flags $in -L./build -lcorevm
 
 rule create_lib
     command = ar rcs $out $in
 
-rule test
+rule compile_test
     deps = gcc
     depfile = $out.d
     command = g++ -std=c++20 $cflags $
                 -MMD -MP -MF $out.d $
+                $coverage_flags $
                 $$(pkg-config --cflags $test_dependencies) $
                 -o $out $
                 $in $
                 -L./build -lcorevm $
                 $$(pkg-config --libs $test_dependencies)
+
+rule run_test
+    command = ./build/test
+
+rule generate_coverage
+    command = lcov -c -d . --no-external -o $out
+
+rule export_coverage_html
+    command = genhtml $in -o coverage
 
 build build/Core/chunk.o: compile Core/chunk.c
 
@@ -56,6 +68,6 @@ build build/Example/main.o: compile Example/main.c
 
 build build/main: link_main build/Example/main.o | build/libcorevm.a
 
-build build/test: test UnitTest/test.cpp | build/libcorevm.a
+build build/test: compile_test UnitTest/test.cpp | build/libcorevm.a
 
-default build/libcorevm.a build/main build/test
+default build/main build/test

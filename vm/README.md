@@ -16,20 +16,21 @@ Visual Studio 2022 で開発できるようにソリューション `psyche.sln`
 
 ターミナルから Ninja を利用してビルドしてください。
 
-### ビルド
+### メインプログラム
 
 ```bash
 ninja
-```
-
-### メインプログラムの実行
-
-```bash
 ./build/main
 ```
 
 ### テストの実行
 
 ```bash
-./build/test
+./test.sh
+```
+
+カバレッジ計測を有効にする場合：
+
+```bash
+./test_with_cov.sh
 ```

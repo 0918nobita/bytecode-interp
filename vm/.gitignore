@@ -1,2 +1,6 @@
 build/
 chunkInfo.html
+coverage/
+test.gcda
+test.gcno
+lcov.info
