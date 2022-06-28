@@ -18,7 +18,7 @@ rule compile_cpp
 rule link_main
     deps = gcc
     depfile = $out.d
-    command = gcc $cflags -o $out $coverage_flags $in -L./build -lvm -L../target/Debug -llox_compiler
+    command = gcc $cflags -o $out $coverage_flags $in -L./build -lvm -L../target/debug -llox_compiler -lpthread -ldl
 
 rule create_lib
     command = ar rcs $out $in
@@ -32,7 +32,7 @@ rule compile_test
                 $$(pkg-config --cflags $test_dependencies) $
                 -o $out $
                 $in $
-                -L./build -lvm -L../target/Debug -llox_compiler $
+                -L./build -lvm -L../target/debug -llox_compiler -lpthread -ldl $
                 $$(pkg-config --libs $test_dependencies)
 
 build build/VM/chunk.o: compile_c VM/chunk.c
