@@ -18,7 +18,7 @@ rule compile_cpp
 rule link_main
     deps = gcc
     depfile = $out.d
-    command = gcc $cflags -o $out $coverage_flags $in -L./build -lvm -lcompiler
+    command = gcc $cflags -o $out $coverage_flags $in -L./build -lvm -L../target/Debug -llox_compiler
 
 rule create_lib
     command = ar rcs $out $in
@@ -32,7 +32,7 @@ rule compile_test
                 $$(pkg-config --cflags $test_dependencies) $
                 -o $out $
                 $in $
-                -L./build -lvm -lcompiler $
+                -L./build -lvm -L../target/Debug -llox_compiler $
                 $$(pkg-config --libs $test_dependencies)
 
 build build/VM/chunk.o: compile_c VM/chunk.c
@@ -60,17 +60,10 @@ build build/libvm.a: create_lib $
     build/VM/value.o $
     build/VM/vm.o
 
-build build/Compiler/compiler.o: compile_cpp Compiler/compiler.cpp
-build build/Compiler/scanner.o:  compile_cpp Compiler/scanner.cpp
-
-build build/libcompiler.a: create_lib $
-    build/Compiler/compiler.o $
-    build/Compiler/scanner.o
-
 build build/Interp/main.o: compile_c Interp/main.c
 
-build build/main: link_main build/Interp/main.o | build/libvm.a build/libcompiler.a
+build build/main: link_main build/Interp/main.o | build/libvm.a
 
-build build/test: compile_test UnitTest/test.cpp | build/libvm.a build/libcompiler.a
+build build/test: compile_test UnitTest/test.cpp | build/libvm.a
 
 default build/main build/test

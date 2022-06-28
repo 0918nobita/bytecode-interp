@@ -7,3 +7,4 @@ ast.json
 x64/
 .vs/
 packages/
+target/

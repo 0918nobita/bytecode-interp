@@ -19,6 +19,7 @@ Visual Studio 2022 で開発できるようにソリューション `psyche.sln`
 ### メインプログラム
 
 ```bash
+cargo build
 ninja
 ./build/main
 ```
