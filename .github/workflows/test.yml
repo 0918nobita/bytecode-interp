@@ -32,11 +32,10 @@ jobs:
           cmake ..
           make
           sudo make install
-      - name: Build tests
-        run: ninja
-        working-directory: interp
-      - name: Run tests
-        run: ./build/test
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: ./test.sh
         working-directory: interp
 
   macos:
@@ -53,9 +52,8 @@ jobs:
           cmake ..
           make
           sudo make install
-      - name: Build tests
-        run: ninja
-        working-directory: interp
-      - name: Run tests
-        run: ./build/test
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: ./test.sh
         working-directory: interp
