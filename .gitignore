@@ -1,10 +1,13 @@
 .vscode/c_cpp_properties.json
 .ionide/
-bin/
-obj/
 node_modules/
-ast.json
 x64/
 .vs/
 packages/
 target/
+build/
+chunkInfo.html
+coverage/
+test.gcda
+test.gcno
+lcov.info

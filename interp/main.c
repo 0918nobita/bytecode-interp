@@ -2,11 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../VM/common.h"
-#include "../VM/chunk.h"
-#include "../VM/dumpChunk.h"
-#include "../VM/error.h"
-#include "../VM/vm.h"
+#include "compiler.h"
+#include "../vm/common.h"
+#include "../vm/chunk.h"
+#include "../vm/dumpChunk.h"
+#include "../vm/error.h"
+#include "../vm/vm.h"
+
+InterpretResult interpret(const char* source) {
+    compile(source);
+    return INTERPRET_OK;
+}
 
 static void repl() {
     char line[1024];
