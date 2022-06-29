@@ -11,3 +11,4 @@ coverage/
 test.gcda
 test.gcno
 lcov.info
+build2.ninja
