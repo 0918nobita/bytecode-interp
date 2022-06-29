@@ -25,5 +25,3 @@ void freeVM();
 
 void push(Value value);
 Value pop();
-
-InterpretResult interpret(const char* source);

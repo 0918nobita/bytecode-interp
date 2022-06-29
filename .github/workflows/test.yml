@@ -11,6 +11,10 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       - uses: microsoft/setup-msbuild@v1.1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: cargo build
       - name: Restore
         run: msbuild psyche.sln /t:restore /p:RestorePackagesConfig=true
       - name: Build
@@ -36,7 +40,6 @@ jobs:
         with:
           toolchain: stable
       - run: ./test.sh
-        working-directory: interp
 
   macos:
     runs-on: macos-12
@@ -56,4 +59,3 @@ jobs:
         with:
           toolchain: stable
       - run: ./test.sh
-        working-directory: interp

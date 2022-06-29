@@ -14,7 +14,7 @@ charset = utf-8-bom
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{fsproj,yml,json,ml,vcxproj}]
+[*.{config,filters,fsproj,yml,json,ml,user,vcxproj}]
 indent_size = 2
 
 [Makefile]

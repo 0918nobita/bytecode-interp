@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "psyche", "psyche.fsproj", "{8F756286-8A00-4638-AA48-F656106AC191}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Psyche", "psyche\Psyche.fsproj", "{8F756286-8A00-4638-AA48-F656106AC191}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VM", "interp\VM\VM.vcxproj", "{7F7650BD-5A43-4F75-9F5C-B7509D0A0148}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VM", "vm\VM.vcxproj", "{7F7650BD-5A43-4F75-9F5C-B7509D0A0148}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Interp", "interp\Interp\Interp.vcxproj", "{659E5731-A047-4843-A2C4-CB62969E5EF6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Interp", "interp\Interp.vcxproj", "{659E5731-A047-4843-A2C4-CB62969E5EF6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7F7650BD-5A43-4F75-9F5C-B7509D0A0148} = {7F7650BD-5A43-4F75-9F5C-B7509D0A0148}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "interp\UnitTest\UnitTest.vcxproj", "{EF0635E1-876F-4D03-9C2D-DC3A4E1691A2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "unit_test\UnitTest.vcxproj", "{EF0635E1-876F-4D03-9C2D-DC3A4E1691A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

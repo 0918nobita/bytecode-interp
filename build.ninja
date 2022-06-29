@@ -1,0 +1,69 @@
+builddir = build
+test_dependencies = gtest_main
+
+cflags = -Wall -Wextra -O2 -D_DEBUG
+
+coverage_flags = $$([ "$$PSY_COVERAGE" = "true" ] && echo "-fprofile-arcs -ftest-coverage")
+
+rule compile_c
+    deps = gcc
+    depfile = $out.d
+    command = gcc $cflags -MMD -MP -MF $out.d -c -o $out $coverage_flags $in
+
+rule compile_cpp
+    deps = gcc
+    depfile = $out.d
+    command = g++ -std=c++20 $cflags -MMD -MP -MF $out.d -c -o $out $coverage_flags $in
+
+rule link_main
+    deps = gcc
+    depfile = $out.d
+    command = gcc $cflags -o $out $coverage_flags $in -L./build -lvm -L./target/debug -llox_compiler -lpthread -ldl
+
+rule create_lib
+    command = ar rcs $out $in
+
+rule compile_test
+    deps = gcc
+    depfile = $out.d
+    command = g++ -std=c++20 $cflags $
+                -MMD -MP -MF $out.d $
+                $coverage_flags $
+                $$(pkg-config --cflags $test_dependencies) $
+                -o $out $
+                $in $
+                -L./build -lvm -L./target/debug -llox_compiler -lpthread -ldl $
+                $$(pkg-config --libs $test_dependencies)
+
+build build/vm/chunk.o: compile_c vm/chunk.c
+
+build build/vm/debug.o: compile_c vm/debug.c
+
+build build/vm/dumpChunk/inst.o:     compile_c vm/dumpChunk/inst.c
+build build/vm/dumpChunk/line.o:     compile_c vm/dumpChunk/line.c
+build build/vm/dumpChunk/lineList.o: compile_c vm/dumpChunk/lineList.c
+build build/vm/dumpChunk.o:          compile_c vm/dumpChunk.c
+
+build build/vm/memory.o: compile_c vm/memory.c
+
+build build/vm/value.o: compile_c vm/value.c
+build build/vm/vm.o:    compile_c vm/vm.c
+
+build build/libvm.a: create_lib $
+    build/vm/chunk.o $
+    build/vm/debug.o $
+    build/vm/dumpChunk/inst.o $
+    build/vm/dumpChunk/line.o $
+    build/vm/dumpChunk/lineList.o $
+    build/vm/dumpChunk.o $
+    build/vm/memory.o $
+    build/vm/value.o $
+    build/vm/vm.o
+
+build build/interp/main.o: compile_c interp/main.c
+
+build build/main: link_main build/interp/main.o | build/libvm.a
+
+build build/test: compile_test unit_test/test.cpp | build/libvm.a
+
+default build/main build/test
