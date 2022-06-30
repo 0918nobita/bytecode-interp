@@ -35,7 +35,7 @@ type RuleBlock =
         $"rule %s{rulename}\n    command = %s{command}\n%s{depfile}%s{deps}"
 
 type BuildStmt =
-    | BuildStmt of outputs: string array * rulename: string * inputs: string array
+    | BuildStmt of outputs: string list * rulename: string * inputs: string list
 
     override this.ToString() =
         let (BuildStmt (outputs, rulename, inputs)) = this
@@ -44,17 +44,17 @@ type BuildStmt =
         $"build %s{outputs}: %s{rulename} %s{inputs}"
 
 type BuildFileContent =
-    | BuildFileContent of varDecls: VarDecl array * ruleBlocks: RuleBlock array * buildStmts: BuildStmt array
+    | BuildFileContent of varDecls: list<VarDecl> * ruleBlocks: list<RuleBlock> * buildStmts: list<BuildStmt>
 
     override this.ToString() =
         let (BuildFileContent (varDecls, ruleBlocks, buildStmts)) = this
-        let varDecls = varDecls |> Array.map string
-        let ruleBlocks = ruleBlocks |> Array.map string
-        let buildStmts = buildStmts |> Array.map string
+        let varDecls = varDecls |> List.map string
+        let ruleBlocks = ruleBlocks |> List.map string
+        let buildStmts = buildStmts |> List.map string
 
         buildStmts
-        |> Array.append ruleBlocks
-        |> Array.append varDecls
+        |> List.append ruleBlocks
+        |> List.append varDecls
         |> String.concat "\n"
         |> sprintf "%s\n"
 
@@ -82,13 +82,9 @@ let build outputs rulename inputs =
         BuildStmt(outputs = outputs, rulename = rulename, inputs = inputs)
         :: buildStmts
 
-let run buildFile =
+let generate buildFile =
     let content =
-        BuildFileContent(
-            varDecls = Array.ofList varDecls,
-            ruleBlocks = Array.ofList ruleBlocks,
-            buildStmts = Array.ofList buildStmts
-        )
+        BuildFileContent(varDecls = varDecls, ruleBlocks = ruleBlocks, buildStmts = buildStmts)
         |> string
 
     File.WriteAllText(buildFile, content)
